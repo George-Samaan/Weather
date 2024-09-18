@@ -53,9 +53,12 @@ dependencies {
 
     // Maps SDK for Android
     implementation("com.google.android.gms:play-services-maps:19.0.0")
-
     //Google Places
     implementation("com.google.android.libraries.places:places:3.5.0")
+
+
+    //Lottie
+    implementation("com.airbnb.android:lottie:3.4.0")
 }
 
 secrets {

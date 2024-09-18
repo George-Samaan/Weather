@@ -5,7 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.MyApp.Settings" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.MyApp.Bg" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimaryDark">#021526</item> <!-- Optional: Status bar color -->
     </style>
 
