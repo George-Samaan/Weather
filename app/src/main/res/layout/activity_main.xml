@@ -93,6 +93,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_date"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
+            app:lottie_speed="0.5"
             app:lottie_rawRes="@raw/clear_sky_anim"
             app:lottie_url="REPLACE_JSON_URL" />
 
