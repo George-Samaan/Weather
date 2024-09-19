@@ -28,14 +28,12 @@ data class Coord(
 )
 
 data class Main(
+    val feels_like: Double,
+    val humidity: Int,
+    val pressure: Int,
     val temp: Double,
-    val tempMin: Double,
-    val grndLevel: Long,
-    val humidity: Long,
-    val pressure: Long,
-    val seaLevel: Long,
-    val feelsLike: Double,
-    val tempMax: Double
+    val temp_max: Double,
+    val temp_min: Double
 )
 
 data class Sys(

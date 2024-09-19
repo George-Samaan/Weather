@@ -2,6 +2,7 @@ package com.example.iti.ui.homeScreen.view
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -21,6 +22,10 @@ import java.util.Date
 import java.util.Locale
 
 class HomeScreenActivity : AppCompatActivity() {
+    private var city: String = ""
+    private var passedLat: Double = 0.0
+    private var passedLong: Double = 0.0
+
     private val binding: ActivityHomeBinding by lazy {
         ActivityHomeBinding.inflate(layoutInflater)
     }
@@ -36,9 +41,32 @@ class HomeScreenActivity : AppCompatActivity() {
         setContentView(binding.root)
         setUpViews()
         setUpObserver()
+        gettingLatAndLongFromMaps()
+        setCityNameBasedOnLatAndLong()
+        fetchDataBasedOnLatAndLong()
+
+    }
+
+    private fun fetchDataBasedOnLatAndLong() {
         lifecycleScope.launch {
-            weatherViewModel.fetchWeatherByCoordinates(35.5, 38.5)
+            weatherViewModel.fetchWeatherByCoordinates(passedLat, passedLong)
         }
+    }
+
+    private fun setCityNameBasedOnLatAndLong() {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(passedLat, passedLong, 1)
+        if (addresses != null && addresses.isNotEmpty()) {
+            val address = addresses[0]
+            city = "${address.adminArea}, ${address.countryName}"
+            Log.e("HomeScreenActivity", "City: $city")
+        }
+    }
+
+    private fun gettingLatAndLongFromMaps() {
+        passedLat = intent.getDoubleExtra("latitude", 0.0)
+        passedLong = intent.getDoubleExtra("longitude", 0.0)
+        Log.e("HomeScreenActivity", "Latitude: $passedLat, Longitude: $passedLong")
     }
 
     private fun setUpObserver() {
@@ -59,17 +87,18 @@ class HomeScreenActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun updateUi(weather: Weather) {
+        Log.d("WeatherResponse", "Weather data: $weather")
         val currentDegree = weather.main.temp.toInt()
         binding.tvCurrentDegree.text = "${currentDegree}°C"
 
-        val minTemp = weather.main.tempMin.toInt()
+        val minTemp = weather.main.temp_min.toInt()
         binding.tvTempMin.text = "${minTemp}°C"
 
-        val maxTemp = weather.main.tempMax.toInt()
+        val maxTemp = weather.main.temp_max.toInt()
         binding.tvTempMax.text = "${maxTemp}°C"
         Log.d("jeoo", "maxtemp ${maxTemp}")
 
-        binding.tvCityName.text = weather.name
+        binding.tvCityName.text = city
 
         binding.tvWeatherStatus.text = weather.weather[0].description
 
@@ -98,7 +127,6 @@ class HomeScreenActivity : AppCompatActivity() {
         val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
         return simpleDateFormat.format(Date(timesTemp * 1000))
     }
-
 
     private fun setUpViews() {
         binding.btnMaps.setOnClickListener {
