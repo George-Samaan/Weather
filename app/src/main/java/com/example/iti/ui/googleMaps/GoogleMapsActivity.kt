@@ -1,9 +1,10 @@
-package com.example.iti
+package com.example.iti.ui.googleMaps
 
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
 import com.example.iti.databinding.BottomSheetLocationBinding
 import com.google.android.gms.maps.CameraUpdateFactory

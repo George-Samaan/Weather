@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_background"
-        tools:context=".MainActivity">
+        tools:context=".ui.homeScreen.view.HomeScreenActivity">
 
 
         <ImageView
@@ -126,9 +126,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="L:23°"
+            android:text="L:23°C"
             android:textColor="#99FFFFFF"
-            android:textSize="20dp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@id/tv_weather_status"
             app:layout_constraintTop_toBottomOf="@id/tv_weather_status" />
 
@@ -137,9 +137,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="H:42°°"
+            android:text="H:42°C"
             android:textColor="#99FFFFFF"
-            android:textSize="20dp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/tv_weather_status"
             app:layout_constraintTop_toBottomOf="@id/tv_weather_status" />
 
@@ -257,7 +257,7 @@
                     android:id="@+id/tv_wind_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Meter/sec"
+                    android:text="0 m/s"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_wind"
@@ -350,7 +350,7 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_wind" />
 
                 <TextView
-                    android:id="@+id/tv_dynamic_sunset"
+                    android:id="@+id/tv_sunset_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="6:00 PM"
@@ -367,9 +367,9 @@
                     android:text="Sunset"
                     android:textColor="@color/white"
                     android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tv_dynamic_sunset"
-                    app:layout_constraintStart_toStartOf="@id/tv_dynamic_sunset"
-                    app:layout_constraintTop_toBottomOf="@id/tv_dynamic_sunset" />
+                    app:layout_constraintEnd_toEndOf="@id/tv_sunset_value"
+                    app:layout_constraintStart_toStartOf="@id/tv_sunset_value"
+                    app:layout_constraintTop_toBottomOf="@id/tv_sunset_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
