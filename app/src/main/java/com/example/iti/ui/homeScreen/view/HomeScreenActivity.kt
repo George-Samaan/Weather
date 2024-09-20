@@ -16,6 +16,7 @@ import com.example.iti.ui.googleMaps.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModel
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
 import com.example.iti.ui.settings.SettingsActivity
+import com.example.iti.utils.Helpers.formatTime
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -25,8 +26,8 @@ class HomeScreenActivity : AppCompatActivity() {
     private var city: String = ""
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
-
     private lateinit var binding: ActivityHomeScreenBinding
+    private lateinit var adapter: HourlyAdapter
 
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
@@ -43,12 +44,27 @@ class HomeScreenActivity : AppCompatActivity() {
         gettingLatAndLongFromMaps()
         setCityNameBasedOnLatAndLong()
         fetchDataBasedOnLatAndLong()
+        setUpHourlyAdapter()
+
+
+
+
 
     }
 
+    private fun setUpHourlyAdapter() {
+        adapter = HourlyAdapter()
+        binding.rvHourlyDegrees.adapter = adapter
+    }
+
+
     private fun fetchDataBasedOnLatAndLong() {
         lifecycleScope.launch {
-            weatherViewModel.fetchWeatherByCoordinates(passedLat, passedLong)
+            weatherViewModel.fetchCurrentWeatherDataByCoordinates(passedLat, passedLong)
+        }
+
+        lifecycleScope.launch {
+            weatherViewModel.fetchHourlyWeatherByCoordinates(passedLat, passedLong)
         }
     }
 
@@ -83,6 +99,19 @@ class HomeScreenActivity : AppCompatActivity() {
                 }
             )
         }
+        weatherViewModel.hourlyForecastDataByCoordinates.observe(this) { result ->
+            result.fold(
+                onSuccess = { hourlyForecast ->
+                    val limitedHourList = hourlyForecast.list.take(9)
+                    adapter.submitList(limitedHourList)
+                },
+                onFailure = {
+                    Log.d(
+                        "WeatherRepository", "Error retrieving hourly forecast data"
+                    )
+                }
+            )
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -110,10 +139,10 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvCloudValue.text = "${weather.clouds.all} %"
 
         val sunrise = weather.sys.sunrise
-        binding.tvSunsetValue.text = time(sunrise)
+        binding.tvSunsetValue.text = formatTime(sunrise)
 
         val sunset = weather.sys.sunset
-        binding.tvSunriseValue.text = time(sunset)
+        binding.tvSunriseValue.text = formatTime(sunset)
 
     }
 
@@ -121,11 +150,6 @@ class HomeScreenActivity : AppCompatActivity() {
     private fun date(): String {
         val simpleDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         return simpleDateFormat.format(Date())
-    }
-
-    private fun time(timesTemp: Long): String {
-        val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        return simpleDateFormat.format(Date(timesTemp * 1000))
     }
 
     private fun setUpViews() {
