@@ -11,8 +11,8 @@ import com.example.iti.databinding.ItemHourlyBinding
 import com.example.iti.model.HourlyListElement
 import com.example.iti.utils.Helpers.formatTime
 
-class HourlyAdapter :
-    ListAdapter<HourlyListElement, HourlyAdapter.HourlyWeatherViewHolder>(HourlyWeatherDiffCallback()) {
+class HourlyAdapter : ListAdapter<HourlyListElement, HourlyAdapter.HourlyWeatherViewHolder>
+    (HourlyWeatherDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyWeatherViewHolder {
         val binding = ItemHourlyBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -55,7 +55,6 @@ class HourlyAdapter :
             }
             binding.imvWeatherHour.setImageResource(icon)
         }
-
     }
 
     private fun getHourFromUnixTime(unixTime: Long): Int {

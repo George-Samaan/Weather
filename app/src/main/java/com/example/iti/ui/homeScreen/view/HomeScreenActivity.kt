@@ -45,18 +45,12 @@ class HomeScreenActivity : AppCompatActivity() {
         setCityNameBasedOnLatAndLong()
         fetchDataBasedOnLatAndLong()
         setUpHourlyAdapter()
-
-
-
-
-
     }
 
     private fun setUpHourlyAdapter() {
         adapter = HourlyAdapter()
         binding.rvHourlyDegrees.adapter = adapter
     }
-
 
     private fun fetchDataBasedOnLatAndLong() {
         lifecycleScope.launch {
@@ -137,10 +131,8 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvHumidityValue.text = "${weather.main.humidity} %"
         binding.tvWindValue.text = "${weather.wind.speed} m/s"
         binding.tvCloudValue.text = "${weather.clouds.all} %"
-
         val sunrise = weather.sys.sunrise
         binding.tvSunsetValue.text = formatTime(sunrise)
-
         val sunset = weather.sys.sunset
         binding.tvSunriseValue.text = formatTime(sunset)
 
@@ -157,7 +149,6 @@ class HomeScreenActivity : AppCompatActivity() {
             val intent = Intent(this, GoogleMapsActivity::class.java)
             startActivity(intent)
         }
-
         binding.btnSettings.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
