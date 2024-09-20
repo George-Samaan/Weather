@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.iti.databinding.ActivityHomeBinding
+import com.example.iti.databinding.ActivityHomeScreenBinding
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.model.Weather
@@ -26,9 +26,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
 
-    private val binding: ActivityHomeBinding by lazy {
-        ActivityHomeBinding.inflate(layoutInflater)
-    }
+    private lateinit var binding: ActivityHomeScreenBinding
 
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
@@ -38,6 +36,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityHomeScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpViews()
         setUpObserver()
@@ -53,10 +52,11 @@ class HomeScreenActivity : AppCompatActivity() {
         }
     }
 
+    @Suppress("DEPRECATION")
     private fun setCityNameBasedOnLatAndLong() {
         val geocoder = Geocoder(this, Locale.getDefault())
         val addresses = geocoder.getFromLocation(passedLat, passedLong, 1)
-        if (addresses != null && addresses.isNotEmpty()) {
+        if (!addresses.isNullOrEmpty()) {
             val address = addresses[0]
             city = "${address.adminArea}, ${address.countryName}"
             Log.e("HomeScreenActivity", "City: $city")
@@ -96,7 +96,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
         val maxTemp = weather.main.temp_max.toInt()
         binding.tvTempMax.text = "${maxTemp}°C"
-        Log.d("jeoo", "maxtemp ${maxTemp}")
+        Log.d("jeoo", "maxtemp $maxTemp")
 
         binding.tvCityName.text = city
 
