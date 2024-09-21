@@ -28,6 +28,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private var passedLong: Double = 0.0
     private lateinit var binding: ActivityHomeScreenBinding
     private lateinit var adapter: HourlyAdapter
+    private lateinit var dailyAdapter: DailyAdapter
 
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
@@ -45,6 +46,12 @@ class HomeScreenActivity : AppCompatActivity() {
         setCityNameBasedOnLatAndLong()
         fetchDataBasedOnLatAndLong()
         setUpHourlyAdapter()
+        setUpDailyAdapter()
+    }
+
+    private fun setUpDailyAdapter() {
+        dailyAdapter = DailyAdapter()
+        binding.rvDetailedDays.adapter = dailyAdapter
     }
 
     private fun setUpHourlyAdapter() {
@@ -59,6 +66,10 @@ class HomeScreenActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             weatherViewModel.fetchHourlyWeatherByCoordinates(passedLat, passedLong)
+        }
+
+        lifecycleScope.launch {
+            weatherViewModel.fetchDailyWeatherByCoordinates(passedLat, passedLong)
         }
     }
 
@@ -106,7 +117,21 @@ class HomeScreenActivity : AppCompatActivity() {
                 }
             )
         }
+        weatherViewModel.dailyForecastDataByCoordinates.observe(this) { result ->
+            result.fold(
+                onSuccess = { dailyForecast ->
+                    dailyAdapter.submitList(dailyForecast.list)
+                    Log.d("Daily", "Daily forecast fetched successfully: $dailyForecast")
+                },
+                onFailure = {
+                    Log.d(
+                        "WeatherRepository", "Error retrieving daily forecast data"
+                    )
+                }
+            )
+        }
     }
+
 
     @SuppressLint("SetTextI18n")
     private fun updateUi(weather: Weather) {

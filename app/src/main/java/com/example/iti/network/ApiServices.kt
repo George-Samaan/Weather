@@ -1,5 +1,6 @@
 package com.example.iti.network
 
+import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
 import retrofit2.http.GET
@@ -21,4 +22,12 @@ interface ApiServices {
         @Query("appid") appid: String,
         @Query("units") units: String
     ): retrofit2.Response<Hourly>
+
+    @GET("forecast")
+    suspend fun getDailyForecast(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") appid: String,
+        @Query("units") units: String
+    ): retrofit2.Response<DailyForecast>
 }

@@ -24,13 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="88dp"
         android:src="@drawable/ic_colored_sunny"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_status_days"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_weather_condition"
         app:layout_constraintStart_toEndOf="@id/tv_day_days"
-        app:layout_constraintTop_toTopOf="@+id/tv_status_days"
+        app:layout_constraintTop_toTopOf="@+id/tv_weather_condition"
         app:layout_constraintVertical_bias="0.75" />
 
     <TextView
-        android:id="@+id/tv_status_days"
+        android:id="@+id/tv_weather_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
