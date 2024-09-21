@@ -1,6 +1,7 @@
 package com.example.iti.db.remote
 
 import android.util.Log
+import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
 import com.example.iti.network.ApiClient
@@ -51,4 +52,27 @@ class RemoteDataSourceImpl : RemoteDataSource {
             }
         }
     }
+
+    override suspend fun fetchDailyForecast(lat: Double, lon: Double): Result<DailyForecast> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val response =
+                    apiService.getDailyForecast(lat, lon, Constants.API_KEY, Constants.UNITS)
+                if (response.isSuccessful && response.body() != null) {
+                    Log.d(
+                        "WeatherRepository",
+                        "Daily forecast fetched successfully: ${response.body()}"
+                    )
+                    Result.success(response.body()!!)
+                } else {
+                    Result.failure(Throwable("Error retrieving daily forecast data"))
+                }
+
+            } catch (e: IOException) {
+                Result.failure(Throwable("Network error: ${e.message}"))
+            }
+        }
+    }
+
+
 }
