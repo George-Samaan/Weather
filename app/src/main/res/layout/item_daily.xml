@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="4dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="4dp"
+    android:paddingVertical="4dp">
 
     <TextView
         android:id="@+id/tv_day_days"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="93dp"
+        android:layout_height="18dp"
         android:layout_marginStart="16dp"
         android:gravity="start"
         android:text="Today"
@@ -22,18 +24,17 @@
         android:id="@+id/iv_icon_days"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="28dp"
         android:src="@drawable/ic_colored_sunny"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_status_days"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_weather_condition"
         app:layout_constraintStart_toEndOf="@id/tv_day_days"
-        app:layout_constraintTop_toTopOf="@+id/tv_status_days"
-        app:layout_constraintVertical_bias="0.75" />
+        app:layout_constraintTop_toTopOf="@+id/tv_weather_condition" />
 
     <TextView
-        android:id="@+id/tv_status_days"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
+        android:id="@+id/tv_weather_condition"
+        android:layout_width="147dp"
+        android:layout_height="19dp"
+        android:gravity="start"
         android:text="Sunny"
         android:textColor="#79747E"
         android:textSize="15sp"

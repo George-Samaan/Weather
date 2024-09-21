@@ -1,11 +1,14 @@
-package com.example.iti
+package com.example.iti.ui.googleMaps
 
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
 import com.example.iti.databinding.BottomSheetLocationBinding
+import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -170,6 +173,11 @@ class GoogleMapsActivity : AppCompatActivity() {
 
         bottomSheetBinding.saveButton.setOnClickListener {
             Log.e("GoogleMapsActivity", "Location saved:${latLng.latitude}, ${latLng.longitude}")
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            intent.putExtra("latitude", latLng.latitude)
+            intent.putExtra("longitude", latLng.longitude)
+            startActivity(intent)
+            finish()
             bottomSheetDialog.dismiss()
         }
         bottomSheetBinding.cancelButton.setOnClickListener {

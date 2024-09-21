@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gradient_background"
-        tools:context=".MainActivity">
+        tools:context=".ui.homeScreen.view.HomeScreenActivity">
 
 
         <ImageView
@@ -62,7 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="-5dp"
-            android:text="Tagmou3"
+            tools:text="Tagmou3"
             android:textColor="#FFFFFF"
             android:textSize="28sp"
             android:textStyle="bold"
@@ -76,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Wed, 18/09/24"
+            tools:text="Wed, 18/09/24"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="@id/tv_city_name"
@@ -93,8 +93,8 @@
             app:layout_constraintTop_toBottomOf="@id/tv_date"
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_speed="0.5"
             app:lottie_rawRes="@raw/clear_sky_anim"
+            app:lottie_speed="0.5"
             app:lottie_url="REPLACE_JSON_URL" />
 
         <TextView
@@ -102,9 +102,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dp"
-            android:text="38°C"
+            android:textSize="75sp"
             android:textColor="@color/white"
-            android:textSize="75dp"
+            tools:text="38°C"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/anim_weather"
             app:layout_constraintTop_toTopOf="@id/anim_weather" />
@@ -114,7 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
-            android:text="Mostly Clear"
+            tools:text="Mostly Clear"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="@+id/tv_current_degree"
@@ -126,9 +126,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="L:23°"
+            app:layout_constraintEnd_toStartOf="@+id/tv_temp_max"
             android:textColor="#99FFFFFF"
-            android:textSize="20dp"
+            android:textSize="16sp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/anim_weather"
+            tools:text="L:23°C"
             app:layout_constraintStart_toStartOf="@id/tv_weather_status"
             app:layout_constraintTop_toBottomOf="@id/tv_weather_status" />
 
@@ -137,10 +140,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-            android:text="H:42°°"
+            app:layout_constraintEnd_toEndOf="@+id/tv_weather_status"
             android:textColor="#99FFFFFF"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toEndOf="@id/tv_weather_status"
+            android:textSize="16sp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tv_temp_min"
+            tools:text="H:42°C"
             app:layout_constraintTop_toBottomOf="@id/tv_weather_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -191,7 +196,7 @@
                     android:id="@+id/tv_pressure_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 hpa"
+                    tools:text="0 hpa"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/imv_pressure"
@@ -224,7 +229,7 @@
                     android:id="@+id/tv_humidity_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0%"
+                    tools:text="0%"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_humidity"
@@ -257,7 +262,7 @@
                     android:id="@+id/tv_wind_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 Meter/sec"
+                    tools:text="0 m/s"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_wind"
@@ -289,7 +294,7 @@
                     android:id="@+id/tv_cloud_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0%"
+                    tools:text="0%"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_cloud"
@@ -321,7 +326,7 @@
                     android:id="@+id/tv_sunrise_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6:00 AM"
+                    tools:text="6:00 AM"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_sunrise"
@@ -350,10 +355,10 @@
                     app:layout_constraintTop_toBottomOf="@id/tv_wind" />
 
                 <TextView
-                    android:id="@+id/tv_dynamic_sunset"
+                    android:id="@+id/tv_sunset_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="6:00 PM"
+                    tools:text="6:00 PM"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@id/iv_sunset"
@@ -367,9 +372,9 @@
                     android:text="Sunset"
                     android:textColor="@color/white"
                     android:textSize="13sp"
-                    app:layout_constraintEnd_toEndOf="@id/tv_dynamic_sunset"
-                    app:layout_constraintStart_toStartOf="@id/tv_dynamic_sunset"
-                    app:layout_constraintTop_toBottomOf="@id/tv_dynamic_sunset" />
+                    app:layout_constraintEnd_toEndOf="@id/tv_sunset_value"
+                    app:layout_constraintStart_toStartOf="@id/tv_sunset_value"
+                    app:layout_constraintTop_toBottomOf="@id/tv_sunset_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
