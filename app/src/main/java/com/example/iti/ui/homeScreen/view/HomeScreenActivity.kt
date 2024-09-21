@@ -117,18 +117,8 @@ class HomeScreenActivity : AppCompatActivity() {
                 }
             )
         }
-        weatherViewModel.dailyForecastDataByCoordinates.observe(this) { result ->
-            result.fold(
-                onSuccess = { dailyForecast ->
-                    dailyAdapter.submitList(dailyForecast.list)
-                    Log.d("Daily", "Daily forecast fetched successfully: $dailyForecast")
-                },
-                onFailure = {
-                    Log.d(
-                        "WeatherRepository", "Error retrieving daily forecast data"
-                    )
-                }
-            )
+        weatherViewModel.dailyForecastDataByCoordinates.observe(this) { dailyForecastList ->
+            dailyAdapter.submitList(dailyForecastList)
         }
     }
 
