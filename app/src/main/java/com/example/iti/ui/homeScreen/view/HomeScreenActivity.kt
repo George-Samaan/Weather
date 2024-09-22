@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.iti.R
 import com.example.iti.databinding.ActivityHomeScreenBinding
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
@@ -116,6 +117,11 @@ class HomeScreenActivity : AppCompatActivity() {
         val unit = settingsViewModel.getTemperatureUnit()
         val windSpeedUnit = settingsViewModel.getWindSpeedUnit()
 
+        //set Lottie based on weather
+        val lottieAnimation = checkWeatherDescription(weather)
+        binding.animWeather.setAnimation(lottieAnimation)
+        binding.animWeather.playAnimation()
+
         //update Temp
         val currentTemp = convertTemperature(weather.main.temp, unit)
         binding.tvCurrentDegree.text = String.format("%.0f°%s", currentTemp, getUnitSymbol(unit))
@@ -127,6 +133,8 @@ class HomeScreenActivity : AppCompatActivity() {
         //update weather details
         binding.tvCityName.text = city
         binding.tvWeatherStatus.text = weather.weather[0].description
+            .split(" ")
+            .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
         binding.tvDate.text = date()
         binding.tvPressureValue.text = "${weather.main.pressure} hpa"
         binding.tvHumidityValue.text = "${weather.main.humidity} %"
@@ -144,14 +152,44 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvSunsetValue.text = formatTime(weather.sys.sunset)
     }
 
+    private fun checkWeatherDescription(weather: Weather): Int {
+        val lottieAnimation = when (weather.weather[0].description.lowercase()) {
+            "clear sky" -> R.raw.clear_sky_anim
+            "few clouds" -> R.raw.few_clouds
+            "scattered clouds" -> R.raw.scattered_clouds_anim
+            "broken clouds" -> R.raw.broken_cloud_anim
+            "overcast clouds" -> R.raw.overcast_clouds_anim
+            "light intensity shower rain" -> R.raw.rain_anim
+            "light rain" -> R.raw.rain_anim
+            "moderate rain" -> R.raw.rain_anim
+            "light snow" -> R.raw.snow_anim
+            //underTesting
+            "thunderstorm" -> R.raw.thunderstorm
+            "mist" -> R.raw.mist
+            else -> R.raw.clear_sky_anim
+        }
+        return lottieAnimation
+    }
+
     @Suppress("DEPRECATION")
     private fun setCityNameBasedOnLatAndLong() {
         val geocoder = Geocoder(this, Locale.getDefault())
         val addresses = geocoder.getFromLocation(passedLat, passedLong, 1)
         if (!addresses.isNullOrEmpty()) {
             val address = addresses[0]
-            city = "${address.adminArea}, ${address.countryName}"
-            Log.e("HomeScreenActivity", "City: $city")
+
+            // Safely handle potential null values for the admin area and country name
+            val adminArea = address.adminArea?.takeIf { it.isNotBlank() } ?: ""
+            val countryName = address.countryName?.takeIf { it.isNotBlank() } ?: ""
+
+            // Format the city string, omitting null or blank values
+            city = listOf(adminArea, countryName)
+                .filter { it.isNotEmpty() }
+                .joinToString(", ")
+
+            if (city.isNotEmpty()) {
+                Log.e("HomeScreenActivity", "City: $city")
+            }
         }
     }
 

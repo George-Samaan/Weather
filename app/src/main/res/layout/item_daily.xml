@@ -17,14 +17,15 @@
         android:textColor="#79747E"
         android:textSize="16sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_weather_condition"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/tv_weather_condition" />
 
     <ImageView
         android:id="@+id/iv_icon_days"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginStart="40dp"
         android:src="@drawable/ic_few_cloud"
         app:layout_constraintBottom_toBottomOf="@+id/tv_weather_condition"
         app:layout_constraintStart_toEndOf="@id/tv_day_days"
@@ -35,15 +36,16 @@
         android:id="@+id/tv_weather_condition"
         android:layout_width="147dp"
         android:layout_height="wrap_content"
-        android:gravity="start"
         android:layout_marginStart="4dp"
+        android:gravity="start"
         android:text="Sunny"
         android:textColor="#79747E"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_high_degree"
         app:layout_constraintEnd_toStartOf="@+id/tv_high_degree"
         app:layout_constraintHorizontal_bias="0.105"
         app:layout_constraintStart_toEndOf="@id/iv_icon_days"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/tv_high_degree" />
 
     <TextView
         android:id="@+id/tv_high_degree"
@@ -60,7 +62,7 @@
 
     <TextView
         android:id="@+id/tv_low_degree"
-        android:layout_width="33dp"
+        android:layout_width="37dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:gravity="center"
@@ -68,8 +70,9 @@
         android:textColor="#79747E"
         android:textSize="13sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_high_degree"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/tv_high_degree" />
 
     <ImageView
         android:id="@+id/ic_line"
