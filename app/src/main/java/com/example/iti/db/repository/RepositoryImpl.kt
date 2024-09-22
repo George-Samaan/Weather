@@ -5,21 +5,22 @@ import com.example.iti.db.sharedPrefrences.SettingsDataSource
 import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
+import kotlinx.coroutines.flow.Flow
 
 class RepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
     private val settingsDataSource: SettingsDataSource
 ) : Repository {
 
-    override suspend fun fetchCurrentWeather(lat: Double, long: Double): Result<Weather> {
+    override fun fetchCurrentWeather(lat: Double, long: Double): Flow<Weather> {
         return remoteDataSource.fetchCurrentWeather(lat, long)
     }
 
-    override suspend fun fetchHourlyForecast(lat: Double, lon: Double): Result<Hourly> {
+    override fun fetchHourlyForecast(lat: Double, lon: Double): Flow<Hourly> {
         return remoteDataSource.fetchHourlyForecast(lat, lon)
     }
 
-    override suspend fun fetchDailyForecast(lat: Double, lon: Double): Result<DailyForecast> {
+    override fun fetchDailyForecast(lat: Double, lon: Double): Flow<DailyForecast> {
         return remoteDataSource.fetchDailyForecast(lat, lon)
     }
 

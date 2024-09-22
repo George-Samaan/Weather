@@ -7,6 +7,7 @@ import com.example.iti.databinding.ActivitySettingsBinding
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
+import com.example.iti.network.ApiClient
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
 
@@ -15,7 +16,7 @@ class SettingsActivity : AppCompatActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels {
         SettingsViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(),
+                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 )

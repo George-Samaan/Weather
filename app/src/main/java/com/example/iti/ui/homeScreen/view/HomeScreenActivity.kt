@@ -5,15 +5,21 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.iti.R
 import com.example.iti.databinding.ActivityHomeScreenBinding
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
+import com.example.iti.model.DailyForecastElement
+import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
+import com.example.iti.network.ApiClient
+import com.example.iti.network.ApiState
 import com.example.iti.ui.googleMaps.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModel
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
@@ -36,11 +42,12 @@ class HomeScreenActivity : AppCompatActivity() {
     private var city: String = ""
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(),
+                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 )
@@ -51,7 +58,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels {
         SettingsViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(),
+                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 )
@@ -66,13 +73,61 @@ class HomeScreenActivity : AppCompatActivity() {
         // setup views & adapters & observers
         setUpViews()
         setUpAdapters()
-        setUpObserver()
 
         gettingLatAndLongFromMaps()
-
         setCityNameBasedOnLatAndLong()
-        fetchDataBasedOnLatAndLong()
 
+        fetchDataBasedOnLatAndLong()
+        setUpCollector()
+
+        swipeToRefresh()
+    }
+
+    //check it later
+    private fun swipeToRefresh() {
+        binding.swipeToRefresh.setOnRefreshListener {
+            fetchDataBasedOnLatAndLong()
+            binding.swipeToRefresh.isRefreshing = false
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressCircular.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun setVisibilityOfViewsOnScreen(isLoading: Boolean) {
+        if (isLoading) {
+            binding.tvCityName.visibility = View.GONE
+            binding.tvCurrentDegree.visibility = View.GONE
+            binding.tvWeatherStatus.visibility = View.GONE
+            binding.tvTempMin.visibility = View.GONE
+            binding.tvTempMax.visibility = View.GONE
+            binding.cardWeatherDetails.visibility = View.GONE
+        } else {
+            slideInAndScaleView(binding.tvCityName)
+            slideInAndScaleView(binding.tvCurrentDegree)
+            slideInAndScaleView(binding.tvWeatherStatus)
+            slideInAndScaleView(binding.tvTempMin)
+            slideInAndScaleView(binding.tvTempMax)
+            slideInAndScaleView(binding.cardWeatherDetails)
+        }
+    }
+
+    private fun slideInAndScaleView(view: View) {
+        view.apply {
+            scaleX = 0f
+            scaleY = 0f
+            translationY = 100f
+            visibility = View.VISIBLE
+            // Animate scaling and sliding in
+            animate()
+                .scaleX(1f)
+                .scaleY(1f)
+                .translationY(0f)
+                .setDuration(1000)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
+        }
     }
 
     private fun setUpAdapters() {
@@ -83,24 +138,81 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.rvHourlyDegrees.adapter = adapter
     }
 
-    private fun setUpObserver() {
-        weatherViewModel.weatherDataByCoordinates.observe(this) { result ->
-            result.fold(
-                onSuccess = { weather -> updateUi(weather) },
-                onFailure = { error -> Log.e("WeatherError", "Error: ${error.message}") }
+    private fun setUpCollector() {
+        lifecycleScope.launch {
+            weatherViewModel.weatherDataStateFlow.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> {
+                        showLoading(true)
+                        setVisibilityOfViewsOnScreen(true)
+                        binding.rvHourlyDegrees.visibility = View.GONE
+                        binding.cardDaysDetails.visibility = View.GONE
 
-            )
+
+                    }
+
+                    is ApiState.Success -> {
+                        showLoading(false)
+                        setVisibilityOfViewsOnScreen(false)
+                        binding.rvHourlyDegrees.visibility = View.VISIBLE
+                        binding.cardDaysDetails.visibility = View.VISIBLE
+
+                        updateUi(apiState.data as Weather)
+                    }
+
+                    is ApiState.Failure -> {
+                        showLoading(false)
+                        setVisibilityOfViewsOnScreen(false)
+                        binding.rvHourlyDegrees.visibility = View.GONE
+                        binding.rvDetailedDays.visibility = View.GONE
+
+                        Log.e("WeatherError", "Error retrieving weather data ${apiState.message}")
+                    }
+                }
+            }
         }
-        weatherViewModel.hourlyForecastDataByCoordinates.observe(this) { result ->
-            result.fold(onSuccess = { hourlyForecast ->
-                val limitedHourList = hourlyForecast.list.take(9)
-                adapter.submitList(limitedHourList)
-            },
-                onFailure = { Log.e("WeatherError", "Error retrieving hourly data") }
-            )
+
+        lifecycleScope.launch {
+            weatherViewModel.hourlyForecastDataStateFlow.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> {
+                    }
+
+                    is ApiState.Success -> {
+                        val hourlyList = (apiState.data as Hourly).list.take(9)
+                        adapter.submitList(hourlyList)
+                    }
+
+                    is ApiState.Failure -> {
+                        Log.e(
+                            "WeatherError",
+                            "Error retrieving hourly forecast data ${apiState.message}"
+                        )
+                    }
+                }
+            }
         }
-        weatherViewModel.dailyForecastDataByCoordinates.observe(this) { dailyForecastList ->
-            dailyAdapter.submitList(dailyForecastList)
+
+        lifecycleScope.launch {
+            weatherViewModel.dailyForecastDataStateFlow.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> {
+                    }
+
+                    is ApiState.Success -> {
+                        val dailyList =
+                            (apiState.data as List<*>).filterIsInstance<DailyForecastElement>()
+                        dailyAdapter.submitList(dailyList)
+                    }
+
+                    is ApiState.Failure -> {
+                        Log.e(
+                            "WeatherError",
+                            "Error retrieving daily forecast data ${apiState.message}"
+                        )
+                    }
+                }
+            }
         }
     }
 
