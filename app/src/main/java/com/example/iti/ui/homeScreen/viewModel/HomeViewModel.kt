@@ -55,7 +55,7 @@ class HomeViewModel(private val repository: RepositoryImpl) : ViewModel() {
         }
     }
 
-    fun processForecastData(forecastList: List<DailyForecastElement>): List<DailyForecastElement> {
+    private fun processForecastData(forecastList: List<DailyForecastElement>): List<DailyForecastElement> {
         return forecastList
             .groupBy { element ->
                 // Group by day (use LocalDate to avoid considering time)
