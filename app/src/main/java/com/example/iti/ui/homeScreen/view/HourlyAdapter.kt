@@ -1,5 +1,6 @@
 package com.example.iti.ui.homeScreen.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iti.R
 import com.example.iti.databinding.ItemHourlyBinding
 import com.example.iti.model.HourlyListElement
+import com.example.iti.utils.Helpers.convertTemperature
 import com.example.iti.utils.Helpers.formatTime
+import com.example.iti.utils.Helpers.getUnitSymbol
 
 class HourlyAdapter : ListAdapter<HourlyListElement, HourlyAdapter.HourlyWeatherViewHolder>
     (HourlyWeatherDiffCallback()) {
@@ -45,16 +48,23 @@ class HourlyAdapter : ListAdapter<HourlyListElement, HourlyAdapter.HourlyWeather
     inner class HourlyWeatherViewHolder(private val binding: ItemHourlyBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(hourlyWeather: HourlyListElement) {
+            val unit =
+                binding.root.context.getSharedPreferences("AppSettingPrefs", Context.MODE_PRIVATE)
+                    .getString("TempUnit", "Celsius") ?: "Celsius"
+
+            val temp = convertTemperature(hourlyWeather.main.temp, unit)
+            binding.tvDegreeDayHour.text = String.format("%.0f°%s", temp, getUnitSymbol(unit))
 
             binding.timeHour.text = formatTime(hourlyWeather.dt)
-            binding.tvDegreeDayHour.text = "${hourlyWeather.main.temp.toInt()}°C"
             val hour = getHourFromUnixTime(hourlyWeather.dt)
             val icon = when (hour) {
                 6, 9, 12, 15, 18 -> R.drawable.ic_day_hour
                 else -> R.drawable.ic_night_hour
             }
             binding.imvWeatherHour.setImageResource(icon)
+
         }
+
     }
 
     private fun getHourFromUnixTime(unixTime: Long): Int {

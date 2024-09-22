@@ -1,5 +1,6 @@
 package com.example.iti.ui.homeScreen.view
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -9,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.iti.R
 import com.example.iti.databinding.ItemDailyBinding
 import com.example.iti.model.DailyForecastElement
+import com.example.iti.utils.Helpers.convertTemperature
+import com.example.iti.utils.Helpers.getUnitSymbol
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -53,6 +56,10 @@ class DailyAdapter :
     inner class DailyWeatherViewHolder(private val binding: ItemDailyBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dailyWeather: DailyForecastElement) {
+
+            val unit =
+                binding.root.context.getSharedPreferences("AppSettingPrefs", Context.MODE_PRIVATE)
+                    .getString("TempUnit", "Celsius") ?: "Celsius"
             // Convert the timestamp to a LocalDate
             val date = Instant.ofEpochSecond(dailyWeather.dt)
                 .atZone(ZoneId.systemDefault())
@@ -71,14 +78,22 @@ class DailyAdapter :
                 ) // Day of the week
             }
 
-            // Set the formatted day string
+            val maxTemp = convertTemperature(dailyWeather.main.temp_max, unit)
+            val minTemp = convertTemperature(dailyWeather.main.temp_min, unit)
+
+
+
             binding.tvDayDays.text = dayString
 
             // Set weather details
             binding.tvWeatherCondition.text = dailyWeather.weather[0].description
-            binding.tvHighDegree.text = dailyWeather.main.temp_max.toInt().toString()
-            binding.tvLowDegree.text = dailyWeather.main.temp_min.toInt().toString()
+            binding.tvHighDegree.text = String.format("%.0f°%s", maxTemp, getUnitSymbol(unit))
+            binding.tvLowDegree.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
+
+
+
         }
+
 
     }
 }
