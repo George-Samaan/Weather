@@ -1,56 +1,64 @@
 package com.example.iti.ui.homeScreen.viewModel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.model.DailyForecastElement
-import com.example.iti.model.Hourly
-import com.example.iti.model.Weather
+import com.example.iti.network.ApiState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 
 class HomeViewModel(private val repository: RepositoryImpl) : ViewModel() {
 
-    private val _weatherDataByCoordinates = MutableLiveData<Result<Weather>>()
-    val weatherDataByCoordinates: LiveData<Result<Weather>> get() = _weatherDataByCoordinates
+    private val _weatherDataStateFlow = MutableStateFlow<ApiState>(ApiState.Loading)
+    val weatherDataStateFlow: StateFlow<ApiState> get() = _weatherDataStateFlow
 
-    private val _hourlyForecastDataByCoordinates = MutableLiveData<Result<Hourly>>()
-    val hourlyForecastDataByCoordinates: LiveData<Result<Hourly>> get() = _hourlyForecastDataByCoordinates
+    private val _hourlyForecastDataStateFlow = MutableStateFlow<ApiState>(ApiState.Loading)
+    val hourlyForecastDataStateFlow: StateFlow<ApiState> get() = _hourlyForecastDataStateFlow
 
-    // Instead of Result<DailyForecast>, use List<DailyForecastElement> since you're processing the list
-    private val _dailyForecastDataByCoordinates = MutableLiveData<List<DailyForecastElement>>()
-    val dailyForecastDataByCoordinates: LiveData<List<DailyForecastElement>> get() = _dailyForecastDataByCoordinates
+    private val _dailyForecastDataStateFlow = MutableStateFlow<ApiState>(ApiState.Loading)
+    val dailyForecastDataStateFlow: StateFlow<ApiState> get() = _dailyForecastDataStateFlow
 
 
-    suspend fun fetchCurrentWeatherDataByCoordinates(lat: Double, lon: Double) {
+    fun fetchCurrentWeatherDataByCoordinates(lat: Double, lon: Double) {
         viewModelScope.launch {
-            val result = repository.fetchCurrentWeather(lat, lon)
-            _weatherDataByCoordinates.postValue(result)
-            Log.d("WeatherRepository", "Weather fetched successfully by coordinates: $result")
+            _weatherDataStateFlow.value = ApiState.Loading
+            try {
+                repository.fetchCurrentWeather(lat, lon).collect { weather ->
+                    _weatherDataStateFlow.value = ApiState.Success(weather)
+                }
+            } catch (e: Exception) {
+                _weatherDataStateFlow.value = ApiState.Failure(e.message ?: "Unknown Error")
+            }
         }
     }
 
-    suspend fun fetchHourlyWeatherByCoordinates(lat: Double, lon: Double) {
+    fun fetchHourlyWeatherByCoordinates(lat: Double, lon: Double) {
         viewModelScope.launch {
-            val result = repository.fetchHourlyForecast(lat, lon)
-            _hourlyForecastDataByCoordinates.postValue(result)
-            Log.d("Hourly", "Hourly forecast fetched successfully: $result")
+            _hourlyForecastDataStateFlow.value = ApiState.Loading
+            try {
+                repository.fetchHourlyForecast(lat, lon).collect { hourly ->
+                    _hourlyForecastDataStateFlow.value = ApiState.Success(hourly)
+                }
+            } catch (e: Exception) {
+                _hourlyForecastDataStateFlow.value = ApiState.Failure(e.message ?: "Unknown Error")
+            }
         }
     }
 
-    suspend fun fetchDailyWeatherByCoordinates(lat: Double, lon: Double) {
+    fun fetchDailyWeatherByCoordinates(lat: Double, lon: Double) {
         viewModelScope.launch {
-            val result = repository.fetchDailyForecast(lat, lon)
-            result.onSuccess { forecast ->
-                val processedData =
-                    processForecastData(forecast.list)  // Assuming forecast.list is the data
-                _dailyForecastDataByCoordinates.postValue(processedData)
-            }.onFailure {
-                // Handle error
+            _weatherDataStateFlow.value = ApiState.Loading
+            try {
+                repository.fetchDailyForecast(lat, lon).collect { dailyForecast ->
+                    val processedForecast = processForecastData(dailyForecast.list)
+                    _dailyForecastDataStateFlow.value = ApiState.Success(processedForecast)
+                }
+            } catch (e: Exception) {
+                _dailyForecastDataStateFlow.value = ApiState.Failure(e.message ?: "Unknown Error")
             }
         }
     }

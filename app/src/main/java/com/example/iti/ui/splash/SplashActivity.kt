@@ -112,6 +112,7 @@ class SplashActivity : AppCompatActivity() {
         startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
     }
 
+    @Synchronized
     @SuppressLint("MissingPermission")
     private fun getFreshLocation() {
         val locationRequest: LocationRequest = LocationRequest.Builder(500).apply {
@@ -143,8 +144,8 @@ class SplashActivity : AppCompatActivity() {
             putExtra("latitude", latitude)
             putExtra("longitude", longitude)
             // We will fix this later
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }
