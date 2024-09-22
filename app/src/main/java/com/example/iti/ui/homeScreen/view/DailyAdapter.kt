@@ -73,6 +73,8 @@ class DailyAdapter(
 
                 // Set weather details
                 binding.tvWeatherCondition.text = dailyWeather.weather[0].description
+                    .split(" ")
+                    .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
                 binding.tvHighDegree.text = String.format("%.0f", maxTemp, getUnitSymbol(unit))
                 binding.tvLowDegree.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
 
