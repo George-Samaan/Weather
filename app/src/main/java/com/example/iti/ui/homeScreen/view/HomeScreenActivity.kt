@@ -75,10 +75,10 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setUpAdapters() {
-        dailyAdapter = DailyAdapter()
+        dailyAdapter = DailyAdapter(settingsViewModel, lifecycleScope)
         binding.rvDetailedDays.adapter = dailyAdapter
 
-        adapter = HourlyAdapter()
+        adapter = HourlyAdapter(settingsViewModel, lifecycleScope)
         binding.rvHourlyDegrees.adapter = adapter
     }
 

@@ -25,7 +25,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/ic_colored_sunny"
+        android:src="@drawable/ic_few_cloud"
         app:layout_constraintBottom_toBottomOf="@+id/tv_weather_condition"
         app:layout_constraintStart_toEndOf="@id/tv_day_days"
         app:layout_constraintTop_toTopOf="@+id/tv_weather_condition"
@@ -47,22 +47,23 @@
 
     <TextView
         android:id="@+id/tv_high_degree"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="42°"
         android:textColor="#79747E"
         android:textSize="17sp"
+        android:gravity="center"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/tv_low_degree"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_low_degree"
-        android:layout_width="wrap_content"
+        android:layout_width="33dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:gravity="end"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
         android:text="23°"
         android:textColor="#79747E"
         android:textSize="13sp"
