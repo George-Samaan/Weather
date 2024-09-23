@@ -3,6 +3,7 @@ package com.example.iti.db.repository
 import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
+import com.example.iti.model.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -15,5 +16,12 @@ interface Repository {
     fun setTemperatureUnit(unit: String)
     fun getWindSpeedUnit(): String
     fun setWindSpeedUnit(unit: String)
+
+
+    //local database
+    suspend fun insertWeather(weather: WeatherEntity)
+    fun getAllWeatherData(): Flow<List<WeatherEntity>>
+    suspend fun getFirstWeatherItem(): WeatherEntity?
+    suspend fun deleteWeather(weather: WeatherEntity)
 
 }

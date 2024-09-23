@@ -6,20 +6,26 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.iti.R
 import com.example.iti.databinding.ActivityHomeScreenBinding
+import com.example.iti.db.local.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
+import com.example.iti.db.room.AppDatabase
 import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
 import com.example.iti.model.DailyForecastElement
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
+import com.example.iti.model.WeatherEntity
 import com.example.iti.network.ApiClient
 import com.example.iti.network.ApiState
-import com.example.iti.ui.favourites.FavouritesActivity
+import com.example.iti.ui.favourites.view.FavouritesActivity
+import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
+import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
 import com.example.iti.ui.googleMaps.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModel
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
@@ -43,13 +49,15 @@ class HomeScreenActivity : AppCompatActivity() {
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
     private var isViewOnly: Boolean = false
+
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             RepositoryImpl(
                 remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
-                )
+                ),
+                localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
         )
     }
@@ -60,7 +68,20 @@ class HomeScreenActivity : AppCompatActivity() {
                 remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
-                )
+                ),
+                localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
+            )
+        )
+    }
+
+    private val favouritesViewModel: FavouritesViewModel by viewModels {
+        FavouritesViewModelFactory(
+            RepositoryImpl(
+                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+                settingsDataSource = SettingsDataSourceImpl(
+                    this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
+                ),
+                localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
         )
     }
@@ -89,6 +110,7 @@ class HomeScreenActivity : AppCompatActivity() {
             binding.btnMaps.visibility = View.GONE
             binding.btnFavourites.visibility = View.GONE
             binding.btnHomeNotification.visibility = View.GONE
+            binding.btnSave.visibility = View.VISIBLE
         }
     }
 
@@ -160,8 +182,6 @@ class HomeScreenActivity : AppCompatActivity() {
                         setVisibilityOfViewsOnScreen(true)
                         binding.rvHourlyDegrees.visibility = View.GONE
                         binding.cardDaysDetails.visibility = View.GONE
-
-
                     }
 
                     is ApiState.Success -> {
@@ -169,7 +189,6 @@ class HomeScreenActivity : AppCompatActivity() {
                         setVisibilityOfViewsOnScreen(false)
                         binding.rvHourlyDegrees.visibility = View.VISIBLE
                         binding.cardDaysDetails.visibility = View.VISIBLE
-
                         updateUi(apiState.data as Weather)
                     }
 
@@ -275,7 +294,46 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvCloudValue.text = "${weather.clouds.all} %"
         binding.tvSunriseValue.text = formatTime(weather.sys.sunrise)
         binding.tvSunsetValue.text = formatTime(weather.sys.sunset)
+
+        // Save data to local database when Save button is clicked
+        onSaveButtonClick(currentTemp, minTemp, maxTemp, weather, windSpeed)
     }
+
+    private fun onSaveButtonClick(
+        currentTemp: Double,
+        minTemp: Double,
+        maxTemp: Double,
+        weather: Weather,
+        windSpeed: Double
+    ) {
+        binding.btnSave.setOnClickListener {
+            // Create a WeatherEntity from the current UI data
+            val weatherEntity = WeatherEntity(
+                cityName = city,
+                description = binding.tvWeatherStatus.text.toString(),
+                currentTemp = currentTemp,
+                minTemp = minTemp,
+                maxTemp = maxTemp,
+                pressure = weather.main.pressure,
+                humidity = weather.main.humidity,
+                windSpeed = windSpeed,
+                clouds = weather.clouds.all.toInt(),
+                sunrise = weather.sys.sunrise,
+                sunset = weather.sys.sunset,
+                date = binding.tvDate.text.toString()
+            )
+            // Insert the WeatherEntity into the database via the ViewModel
+            lifecycleScope.launch {
+                favouritesViewModel.insertWeatherData(weatherEntity)
+                Toast.makeText(
+                    this@HomeScreenActivity,
+                    "Location saved successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
 
     private fun checkWeatherDescription(weather: Weather): Int {
         val lottieAnimation = when (weather.weather[0].description.lowercase()) {

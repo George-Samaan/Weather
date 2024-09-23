@@ -3,8 +3,6 @@ package com.example.iti.ui.googleMaps
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
@@ -28,7 +26,6 @@ class GoogleMapsActivity : AppCompatActivity() {
     private var lastMarker: Marker? = null // Add a variable to store the last marker
     private var map: GoogleMap? = null
     private lateinit var binding: ActivityGoogleMapsBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -172,26 +169,24 @@ class GoogleMapsActivity : AppCompatActivity() {
         bottomSheetBinding.longitudeValue.text = latLng.longitude.toString()
         bottomSheetBinding.addressValue.text = addressText
 
-        bottomSheetBinding.saveButton.setOnClickListener {
-            Log.e("GoogleMapsActivity", "Location saved:${latLng.latitude}, ${latLng.longitude}")
-            Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show()
-            bottomSheetDialog.dismiss()
-            finish()
-        }
         bottomSheetBinding.cancelButton.setOnClickListener {
-            // Handle cancel button click
             bottomSheetDialog.dismiss()
         }
+
         bottomSheetBinding.viewButton.setOnClickListener {
             val intent = Intent(this, HomeScreenActivity::class.java)
             intent.putExtra("latitude", latLng.latitude)
             intent.putExtra("longitude", latLng.longitude)
             intent.putExtra("viewOnly", true)
             startActivity(intent)
+            finish()
         }
         bottomSheetDialog.show()
     }
 }
+
+
+
 
 
 

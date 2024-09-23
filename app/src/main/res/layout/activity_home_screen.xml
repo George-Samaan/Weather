@@ -56,6 +56,16 @@
                 app:layout_constraintTop_toTopOf="@id/btn_settings" />
 
             <ImageView
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/btn_save"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_settings"
+                app:layout_constraintEnd_toStartOf="@id/btn_settings"
+                app:layout_constraintTop_toTopOf="@id/btn_settings" />
+
+            <ImageView
                 android:id="@+id/ic_home_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
