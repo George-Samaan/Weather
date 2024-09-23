@@ -17,6 +17,10 @@
         android:theme="@style/Theme.Weather"
         tools:targetApi="31">
         <activity
+            android:name=".ui.favourites.FavouritesActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApp.Bg" />
+        <activity
             android:name=".ui.homeScreen.view.HomeScreenActivity"
             android:exported="false"
             android:launchMode="singleTop"

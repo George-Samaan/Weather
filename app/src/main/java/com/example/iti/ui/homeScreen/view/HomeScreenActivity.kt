@@ -19,6 +19,7 @@ import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
 import com.example.iti.network.ApiClient
 import com.example.iti.network.ApiState
+import com.example.iti.ui.favourites.FavouritesActivity
 import com.example.iti.ui.googleMaps.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModel
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
@@ -41,6 +42,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private var city: String = ""
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
+    private var isViewOnly: Boolean = false
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             RepositoryImpl(
@@ -78,6 +80,16 @@ class HomeScreenActivity : AppCompatActivity() {
         setUpCollector()
 
         swipeToRefresh()
+
+        visibilityForViewerPage()
+    }
+
+    private fun visibilityForViewerPage() {
+        if (isViewOnly) {
+            binding.btnMaps.visibility = View.GONE
+            binding.btnFavourites.visibility = View.GONE
+            binding.btnHomeNotification.visibility = View.GONE
+        }
     }
 
     //check it later
@@ -309,6 +321,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private fun gettingLatAndLongFromMaps() {
         passedLat = intent.getDoubleExtra("latitude", 0.0)
         passedLong = intent.getDoubleExtra("longitude", 0.0)
+        isViewOnly = intent.getBooleanExtra("viewOnly", false)
         Log.e("HomeScreenActivity", "Latitude: $passedLat, Longitude: $passedLong")
     }
 
@@ -318,6 +331,10 @@ class HomeScreenActivity : AppCompatActivity() {
         }
         binding.btnSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        binding.btnFavourites.setOnClickListener {
+            startActivity(Intent(this, FavouritesActivity::class.java))
         }
     }
 

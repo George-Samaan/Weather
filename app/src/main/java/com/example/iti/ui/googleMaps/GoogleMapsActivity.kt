@@ -4,6 +4,7 @@ import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
@@ -173,16 +174,20 @@ class GoogleMapsActivity : AppCompatActivity() {
 
         bottomSheetBinding.saveButton.setOnClickListener {
             Log.e("GoogleMapsActivity", "Location saved:${latLng.latitude}, ${latLng.longitude}")
-            val intent = Intent(this, HomeScreenActivity::class.java)
-            intent.putExtra("latitude", latLng.latitude)
-            intent.putExtra("longitude", latLng.longitude)
-            startActivity(intent)
-            finish()
+            Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show()
             bottomSheetDialog.dismiss()
+            finish()
         }
         bottomSheetBinding.cancelButton.setOnClickListener {
             // Handle cancel button click
             bottomSheetDialog.dismiss()
+        }
+        bottomSheetBinding.viewButton.setOnClickListener {
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            intent.putExtra("latitude", latLng.latitude)
+            intent.putExtra("longitude", latLng.longitude)
+            intent.putExtra("viewOnly", true)
+            startActivity(intent)
         }
         bottomSheetDialog.show()
     }

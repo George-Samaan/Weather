@@ -43,11 +43,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_add_to_favs"
-                app:layout_constraintEnd_toStartOf="@id/ic_home_notification"
+                app:layout_constraintEnd_toStartOf="@id/btn_home_notification"
                 app:layout_constraintTop_toTopOf="@id/btn_settings" />
 
             <ImageView
-                android:id="@+id/ic_home_notification"
+                android:id="@+id/btn_home_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_home_notification"
