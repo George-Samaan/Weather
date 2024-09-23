@@ -9,7 +9,6 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.iti.R
 import com.example.iti.databinding.ActivityHomeScreenBinding
 import com.example.iti.db.remote.RemoteDataSourceImpl
@@ -42,8 +41,6 @@ class HomeScreenActivity : AppCompatActivity() {
     private var city: String = ""
     private var passedLat: Double = 0.0
     private var passedLong: Double = 0.0
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
     private val weatherViewModel: HomeViewModel by viewModels {
         HomeViewModelFactory(
             RepositoryImpl(
@@ -103,6 +100,8 @@ class HomeScreenActivity : AppCompatActivity() {
             binding.tvTempMin.visibility = View.GONE
             binding.tvTempMax.visibility = View.GONE
             binding.cardWeatherDetails.visibility = View.GONE
+            binding.rvHourlyDegrees.visibility = View.GONE
+            binding.rvDetailedDays.visibility = View.GONE
         } else {
             slideInAndScaleView(binding.tvCityName)
             slideInAndScaleView(binding.tvCurrentDegree)
@@ -110,6 +109,8 @@ class HomeScreenActivity : AppCompatActivity() {
             slideInAndScaleView(binding.tvTempMin)
             slideInAndScaleView(binding.tvTempMax)
             slideInAndScaleView(binding.cardWeatherDetails)
+            slideInAndScaleView(binding.rvHourlyDegrees)
+            slideInAndScaleView(binding.rvDetailedDays)
         }
     }
 
