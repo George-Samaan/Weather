@@ -43,6 +43,8 @@
                 android:text="36°"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
+
+
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

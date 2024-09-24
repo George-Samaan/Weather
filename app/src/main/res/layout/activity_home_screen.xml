@@ -216,8 +216,8 @@
 
                     <ImageView
                         android:id="@+id/imv_pressure"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/ic_pressure"
                         app:layout_constraintEnd_toStartOf="@+id/iv_humidity"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -249,8 +249,8 @@
 
                     <ImageView
                         android:id="@+id/iv_humidity"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/ic_humidity"
                         app:layout_constraintEnd_toStartOf="@+id/iv_wind"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -282,8 +282,8 @@
 
                     <ImageView
                         android:id="@+id/iv_wind"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/ic_wind"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -315,10 +315,11 @@
 
                     <ImageView
                         android:id="@+id/iv_cloud"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/ic_cloud"
                         app:layout_constraintEnd_toEndOf="@id/tv_pressure"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintStart_toStartOf="@id/tv_pressure"
                         app:layout_constraintTop_toBottomOf="@id/tv_pressure" />
 
@@ -347,9 +348,10 @@
 
                     <ImageView
                         android:id="@+id/iv_sunrise"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/ic_sunrise"
+                        android:layout_marginTop="10dp"
                         app:layout_constraintEnd_toEndOf="@+id/tv_humidity"
                         app:layout_constraintStart_toStartOf="@id/tv_humidity"
                         app:layout_constraintTop_toBottomOf="@id/tv_humidity" />
@@ -379,8 +381,9 @@
 
                     <ImageView
                         android:id="@+id/iv_sunset"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="10dp"
                         android:src="@drawable/ic_sunset"
                         app:layout_constraintEnd_toEndOf="@id/tv_wind"
                         app:layout_constraintStart_toStartOf="@id/tv_wind"
