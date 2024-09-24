@@ -90,7 +90,11 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun setUpViews() {
         binding.btnMaps.setOnClickListener {
-            startActivity(Intent(this, GoogleMapsActivity::class.java))
+            if (isNetworkAvailable(this)) {
+                startActivity(Intent(this, GoogleMapsActivity::class.java))
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
         binding.btnSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))

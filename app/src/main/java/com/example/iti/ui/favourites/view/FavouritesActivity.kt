@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,7 @@ import com.example.iti.ui.googleMaps.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
+import com.example.iti.utils.Helpers.isNetworkAvailable
 import kotlinx.coroutines.launch
 
 class FavouritesActivity : AppCompatActivity() {
@@ -221,7 +223,11 @@ class FavouritesActivity : AppCompatActivity() {
             finish()
         }
         binding.btnMaps.setOnClickListener {
-            startActivity(Intent(this, GoogleMapsActivity::class.java))
+            if (isNetworkAvailable(this)) {
+                startActivity(Intent(this, GoogleMapsActivity::class.java))
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
