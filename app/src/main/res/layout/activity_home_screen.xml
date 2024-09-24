@@ -118,7 +118,7 @@
                 android:id="@+id/progress_circular"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_marginTop="135dp"
+                android:layout_marginTop="10dp"
                 android:indeterminate="true"
                 android:indeterminateTint="@color/white"
                 android:visibility="gone"
@@ -126,7 +126,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.691"
                 app:layout_constraintStart_toStartOf="@+id/anim_weather"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/anim_weather"
                 app:layout_constraintVertical_bias="0.39" />
 
             <TextView

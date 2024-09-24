@@ -1,6 +1,7 @@
 package com.example.iti.ui.homeScreen.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
@@ -39,7 +40,11 @@ import com.example.iti.utils.Helpers.getUnitSymbol
 import com.example.iti.utils.Helpers.getWindSpeedUnitSymbol
 import com.example.iti.utils.Helpers.isNetworkAvailable
 import com.example.iti.utils.HomeScreenHelper.checkWeatherDescription
+import com.example.iti.utils.HomeScreenHelper.dynamicTextAnimation
 import com.example.iti.utils.HomeScreenHelper.slideInAndScaleView
+import com.example.iti.utils.HomeScreenHelper.slideInFromLeft
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -78,7 +83,9 @@ class HomeScreenActivity : AppCompatActivity() {
         savedLocationsDetails()
         swipeToRefresh()
         visibilityForViewerPage()
-        setHomeScreenFromMap()
+        if (!isNetworkAvailable(this)) {
+            fetchWeatherDataFromSharedPreferences()
+        }
     }
 
     private fun setUpViews() {
@@ -152,23 +159,40 @@ class HomeScreenActivity : AppCompatActivity() {
         gettingDailyWeatherDataFromViewModel()
     }
 
+    private fun saveWeatherDataToSharedPreferences(weather: Weather) {
+        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        // Convert Weather object to JSON string using Gson
+        val gson = Gson()
+        val weatherJson = gson.toJson(weather)
+
+        editor.putString("OfflineHomeScreenData", weatherJson)
+        editor.apply() // Use apply() for asynchronous saving
+    }
+
     private fun gettingWeatherDataFromViewModel() {
         lifecycleScope.launch {
             weatherViewModel.weatherDataStateFlow.collect { apiState ->
                 when (apiState) {
                     is ApiState.Loading -> {
                         showLoading(true)
-                        setVisibilityOfViewsOnScreen(true)
-                        binding.rvHourlyDegrees.visibility = View.GONE
                         binding.cardDaysDetails.visibility = View.GONE
+                        setVisibilityOfViewsOnScreen(true)
                     }
 
                     is ApiState.Success -> {
+                        delay(600)
                         showLoading(false)
+                        slideInAndScaleView(binding.cardDaysDetails)
+//                        binding.cardDaysDetails.visibility = View.VISIBLE
                         setVisibilityOfViewsOnScreen(false)
-                        binding.rvHourlyDegrees.visibility = View.VISIBLE
-                        binding.cardDaysDetails.visibility = View.VISIBLE
-                        updateUi(apiState.data as Weather)
+
+                        val weatherData = apiState.data as Weather
+                        launch {
+                            updateUi(weatherData) // Update UI
+                        }
+                        saveWeatherDataToSharedPreferences(weatherData) // Save to SharedPreferences
                     }
 
                     is ApiState.Failure -> {
@@ -176,6 +200,7 @@ class HomeScreenActivity : AppCompatActivity() {
                         setVisibilityOfViewsOnScreen(false)
                         binding.rvHourlyDegrees.visibility = View.GONE
                         binding.rvDetailedDays.visibility = View.GONE
+
                         Log.e("WeatherError", "Error retrieving weather data ${apiState.message}")
                     }
                 }
@@ -183,27 +208,21 @@ class HomeScreenActivity : AppCompatActivity() {
         }
     }
 
-    private fun setVisibilityOfViewsOnScreen(isLoading: Boolean) {
-        if (isLoading) {
-            binding.tvCityName.visibility = View.GONE
-            binding.tvCurrentDegree.visibility = View.GONE
-            binding.tvWeatherStatus.visibility = View.GONE
-            binding.tvTempMin.visibility = View.GONE
-            binding.tvTempMax.visibility = View.GONE
-            binding.cardWeatherDetails.visibility = View.GONE
-            binding.rvHourlyDegrees.visibility = View.GONE
-            binding.rvDetailedDays.visibility = View.GONE
+    private fun fetchWeatherDataFromSharedPreferences() {
+        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
+        val weatherJson = sharedPreferences.getString("OfflineHomeScreenData", null)
+
+        if (weatherJson != null) {
+            // Convert JSON string back to Weather object
+            val gson = Gson()
+            val weatherData: Weather = gson.fromJson(weatherJson, Weather::class.java)
+            updateUi(weatherData) // Update UI with the saved weather data
         } else {
-            slideInAndScaleView(binding.tvCityName)
-            slideInAndScaleView(binding.tvCurrentDegree)
-            slideInAndScaleView(binding.tvWeatherStatus)
-            slideInAndScaleView(binding.tvTempMin)
-            slideInAndScaleView(binding.tvTempMax)
-            slideInAndScaleView(binding.cardWeatherDetails)
-            slideInAndScaleView(binding.rvHourlyDegrees)
-            slideInAndScaleView(binding.rvDetailedDays)
+            // Handle case when no data is saved
+            Log.e("WeatherError", "No weather data available in SharedPreferences.")
         }
     }
+
     @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun updateUi(weather: Weather) {
         val unit = settingsViewModel.getTemperatureUnit()
@@ -360,7 +379,7 @@ class HomeScreenActivity : AppCompatActivity() {
                     val weatherEntity = favouritesViewModel.getWeatherCity(cityName!!)
                     if (weatherEntity != null) {
                         disableViewsForFavouritesViewer()
-                        fetchDataOnlineFromDataBaseIfNetworkAvailable(weatherEntity)
+                        fetchDataFromDataBaseOrFromRemoteIfNetworkAvailable(weatherEntity)
                     }
                 } else {
                     val weatherEntity = favouritesViewModel.getWeatherCity(cityName!!)
@@ -385,7 +404,7 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.btnSettings.visibility = View.GONE
     }
 
-    private fun fetchDataOnlineFromDataBaseIfNetworkAvailable(weatherEntity: WeatherEntity) {
+    private fun fetchDataFromDataBaseOrFromRemoteIfNetworkAvailable(weatherEntity: WeatherEntity) {
         weatherViewModel.fetchCurrentWeatherDataByCoordinates(
             weatherEntity.latitude,
             weatherEntity.longitude
@@ -409,10 +428,8 @@ class HomeScreenActivity : AppCompatActivity() {
         // Convert and display temperatures
         val currentTemp = convertTemperature(weatherEntity.currentTemp, unit)
         binding.tvCurrentDegree.text = String.format("%.0f°%s", currentTemp, getUnitSymbol(unit))
-
         val minTemp = convertTemperature(weatherEntity.minTemp, unit)
         binding.tvTempMin.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
-
         val maxTemp = convertTemperature(weatherEntity.maxTemp, unit)
         binding.tvTempMax.text = String.format("%.0f°%s", maxTemp, getUnitSymbol(unit))
 
@@ -452,19 +469,6 @@ class HomeScreenActivity : AppCompatActivity() {
             binding.swipeToRefresh.isRefreshing = false
         }
     }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressCircular.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun visibilityForViewerPage() {
-        if (isViewOnly) {
-            binding.btnMaps.visibility = View.GONE
-            binding.btnFavourites.visibility = View.GONE
-            binding.btnHomeNotification.visibility = View.GONE
-            binding.btnSave.visibility = View.VISIBLE
-        }
-    }
     override fun onResume() {
         super.onResume()
         fetchDataBasedOnLatAndLong()
@@ -477,10 +481,40 @@ class HomeScreenActivity : AppCompatActivity() {
         ),
         localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
     )
+    private fun setVisibilityOfViewsOnScreen(isLoading: Boolean) {
+        if (isLoading) {
+            binding.tvCityName.visibility = View.GONE
+            binding.tvCurrentDegree.visibility = View.GONE
+            binding.tvWeatherStatus.visibility = View.GONE
+            binding.tvTempMin.visibility = View.GONE
+            binding.tvTempMax.visibility = View.GONE
+            binding.cardWeatherDetails.visibility = View.GONE
+            binding.rvHourlyDegrees.visibility = View.GONE
+            binding.rvDetailedDays.visibility = View.GONE
+            binding.tvDate.visibility = View.GONE
+        } else {
+            slideInFromLeft(binding.tvCityName)
+            slideInFromLeft(binding.tvDate)
+            dynamicTextAnimation(binding.tvCurrentDegree)
+            slideInAndScaleView(binding.tvWeatherStatus)
+            dynamicTextAnimation(binding.tvTempMin)
+            dynamicTextAnimation(binding.tvTempMax)
+            slideInAndScaleView(binding.cardWeatherDetails)
+            slideInAndScaleView(binding.rvHourlyDegrees)
+            slideInAndScaleView(binding.rvDetailedDays)
+        }
+    }
 
-    private fun setHomeScreenFromMap() {
-        lifecycleScope.launch {
-            weatherViewModel.fetchCurrentWeatherDataByCoordinates(passedLat, passedLong)
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressCircular.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun visibilityForViewerPage() {
+        if (isViewOnly) {
+            binding.btnMaps.visibility = View.GONE
+            binding.btnFavourites.visibility = View.GONE
+            binding.btnHomeNotification.visibility = View.GONE
+            binding.btnSave.visibility = View.VISIBLE
         }
     }
 }
