@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.databinding.ActivitySettingsBinding
+import com.example.iti.db.local.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
+import com.example.iti.db.room.AppDatabase
 import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
 import com.example.iti.network.ApiClient
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
@@ -19,7 +21,8 @@ class SettingsActivity : AppCompatActivity() {
                 remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
                 settingsDataSource = SettingsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
-                )
+                ),
+                localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
         )
     }
@@ -69,9 +72,8 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    @Suppress("DEPRECATION")
     private fun onBackButtonClick() {
-        binding.btnBack.setOnClickListener { onBackPressed() }
+        binding.btnBack.setOnClickListener { finish() }
     }
 
 }

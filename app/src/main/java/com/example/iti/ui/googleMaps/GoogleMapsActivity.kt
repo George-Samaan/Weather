@@ -3,8 +3,6 @@ package com.example.iti.ui.googleMaps
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
@@ -28,7 +26,6 @@ class GoogleMapsActivity : AppCompatActivity() {
     private var lastMarker: Marker? = null // Add a variable to store the last marker
     private var map: GoogleMap? = null
     private lateinit var binding: ActivityGoogleMapsBinding
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,18 +134,13 @@ class GoogleMapsActivity : AppCompatActivity() {
     private fun onMapClicked(latLng: LatLng) {
         // Remove the previous marker if it exists
         lastMarker?.remove()
-
-        // Add a new marker at the clicked location and store the reference
         lastMarker = map?.addMarker(MarkerOptions().position(latLng))
-
-        // Animate the camera to the clicked location with a zoom level of 12
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f)
         map?.animateCamera(cameraUpdate, 1000, null) // Smooth animation over 1 second
 
         // Use Geocoder to get the address details
         val geocoder = Geocoder(this, Locale.ENGLISH)
-        var addressText: String = "Address not found"
-
+        var addressText = "Address not found"
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 5)
             if (addresses!!.isNotEmpty()) {
@@ -167,20 +159,28 @@ class GoogleMapsActivity : AppCompatActivity() {
         val bottomSheetBinding = BottomSheetLocationBinding.inflate(layoutInflater)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
+        val sharedPreferences = getSharedPreferences("homeScreen", MODE_PRIVATE)
 
         bottomSheetBinding.latitudeValue.text = latLng.latitude.toString()
         bottomSheetBinding.longitudeValue.text = latLng.longitude.toString()
         bottomSheetBinding.addressValue.text = addressText
-
-        bottomSheetBinding.saveButton.setOnClickListener {
-            Log.e("GoogleMapsActivity", "Location saved:${latLng.latitude}, ${latLng.longitude}")
-            Toast.makeText(this, "Location saved", Toast.LENGTH_SHORT).show()
-            bottomSheetDialog.dismiss()
-            finish()
-        }
         bottomSheetBinding.cancelButton.setOnClickListener {
-            // Handle cancel button click
             bottomSheetDialog.dismiss()
+        }
+        bottomSheetBinding.setAsHome.setOnClickListener {
+            with(sharedPreferences.edit()) {
+                putFloat("latitude", latLng.latitude.toFloat())
+                putFloat("longitude", latLng.longitude.toFloat())
+                apply()
+            }
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            intent.putExtra("latitude", latLng.latitude)
+            intent.putExtra("longitude", latLng.longitude)
+            intent.putExtra("HOMESCREEN", false)
+            bottomSheetDialog.dismiss()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
         }
         bottomSheetBinding.viewButton.setOnClickListener {
             val intent = Intent(this, HomeScreenActivity::class.java)
@@ -188,10 +188,14 @@ class GoogleMapsActivity : AppCompatActivity() {
             intent.putExtra("longitude", latLng.longitude)
             intent.putExtra("viewOnly", true)
             startActivity(intent)
+            finish()
         }
         bottomSheetDialog.show()
     }
 }
+
+
+
 
 
 
