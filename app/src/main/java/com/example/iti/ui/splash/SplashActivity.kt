@@ -36,19 +36,19 @@ class SplashActivity : AppCompatActivity() {
     private var permissionDeniedCounts = 0
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         requestPermissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
                 if (isGranted) {
                     if (isLocationEnabled()) {
-                        getFreshLocation() // Get current lat & long
+                        getFreshLocation() // Fetch fresh location when enabled
                     } else {
-                        showEnableLocationDialog() // Pop up dialog to ask user
+                        fetchLocationFromSharedPreferences() // Fetch from SharedPreferences if location is disabled
                     }
                 } else {
                     permissionDeniedCounts++ // Increment denial count
@@ -57,6 +57,7 @@ class SplashActivity : AppCompatActivity() {
                     }
                 }
             }
+
         Handler(mainLooper).postDelayed({ checkLocationPermission() }, 3000)
     }
 
@@ -68,9 +69,9 @@ class SplashActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED -> {
                 if (isLocationEnabled()) {
-                    getFreshLocation()
+                    getFreshLocation() // Get current lat & long
                 } else {
-                    showEnableLocationDialog()
+                    fetchLocationFromSharedPreferences() // Get lat & long from SharedPreferences
                 }
             }
             // Show rationale for the permission
@@ -94,6 +95,31 @@ class SplashActivity : AppCompatActivity() {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    // Fetch location from SharedPreferences
+    private fun fetchLocationFromSharedPreferences() {
+        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
+        val savedLatitude = sharedPreferences.getFloat("latitude", Float.MIN_VALUE)
+        val savedLongitude = sharedPreferences.getFloat("longitude", Float.MIN_VALUE)
+
+        if (savedLatitude != Float.MIN_VALUE && savedLongitude != Float.MIN_VALUE) {
+            // Latitude and Longitude are already stored, navigate to HomeScreenActivity
+            val intent = Intent(this, HomeScreenActivity::class.java).apply {
+                putExtra("latitude", savedLatitude.toDouble())
+                putExtra("longitude", savedLongitude.toDouble())
+            }
+            startActivity(intent)
+            finish()
+        } else {
+            // Show message if location is not stored
+            Toast.makeText(
+                this,
+                "No location saved. Please enable location services.",
+                Toast.LENGTH_LONG
+            ).show()
+            showEnableLocationDialog()
+        }
     }
 
     // Show AlertDialog to ask if the user wants to enable location services
@@ -143,9 +169,7 @@ class SplashActivity : AppCompatActivity() {
         val intent = Intent(this, HomeScreenActivity::class.java).apply {
             putExtra("latitude", latitude)
             putExtra("longitude", longitude)
-            // We will fix this later
         }
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
     }

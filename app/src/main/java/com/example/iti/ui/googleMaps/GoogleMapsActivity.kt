@@ -134,18 +134,13 @@ class GoogleMapsActivity : AppCompatActivity() {
     private fun onMapClicked(latLng: LatLng) {
         // Remove the previous marker if it exists
         lastMarker?.remove()
-
-        // Add a new marker at the clicked location and store the reference
         lastMarker = map?.addMarker(MarkerOptions().position(latLng))
-
-        // Animate the camera to the clicked location with a zoom level of 12
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 12f)
         map?.animateCamera(cameraUpdate, 1000, null) // Smooth animation over 1 second
 
         // Use Geocoder to get the address details
         val geocoder = Geocoder(this, Locale.ENGLISH)
-        var addressText: String = "Address not found"
-
+        var addressText = "Address not found"
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 5)
             if (addresses!!.isNotEmpty()) {
@@ -164,24 +159,29 @@ class GoogleMapsActivity : AppCompatActivity() {
         val bottomSheetBinding = BottomSheetLocationBinding.inflate(layoutInflater)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
+        val sharedPreferences = getSharedPreferences("homeScreen", MODE_PRIVATE)
 
         bottomSheetBinding.latitudeValue.text = latLng.latitude.toString()
         bottomSheetBinding.longitudeValue.text = latLng.longitude.toString()
         bottomSheetBinding.addressValue.text = addressText
-
         bottomSheetBinding.cancelButton.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-
         bottomSheetBinding.setAsHome.setOnClickListener {
+            with(sharedPreferences.edit()) {
+                putFloat("latitude", latLng.latitude.toFloat())
+                putFloat("longitude", latLng.longitude.toFloat())
+                apply()
+            }
             val intent = Intent(this, HomeScreenActivity::class.java)
             intent.putExtra("latitude", latLng.latitude)
             intent.putExtra("longitude", latLng.longitude)
             intent.putExtra("HOMESCREEN", false)
+            bottomSheetDialog.dismiss()
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
         }
-
         bottomSheetBinding.viewButton.setOnClickListener {
             val intent = Intent(this, HomeScreenActivity::class.java)
             intent.putExtra("latitude", latLng.latitude)

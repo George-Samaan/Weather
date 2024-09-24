@@ -52,7 +52,6 @@ class HomeScreenActivity : AppCompatActivity() {
     private var passedLong: Double = 0.0
     private var isViewOnly: Boolean = false
     private var cityName: String? = null
-    private var homeScreenFromMap: String? = null
 
     private val weatherViewModel: HomeViewModel by viewModels { HomeViewModelFactory(getRepository()) }
     private val settingsViewModel: SettingsViewModel by viewModels {
@@ -108,7 +107,6 @@ class HomeScreenActivity : AppCompatActivity() {
         passedLong = intent.getDoubleExtra("longitude", 0.0)
         isViewOnly = intent.getBooleanExtra("viewOnly", false)
         cityName = intent.getStringExtra("CITY_KEY")
-        homeScreenFromMap = intent.getStringExtra("HOMESCREEN")
     }
 
     @Suppress("DEPRECATION")
