@@ -1,5 +1,6 @@
 package com.example.iti.ui.favourites.viewModel
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -19,7 +20,8 @@ import kotlinx.coroutines.launch
 
 class FavouritesAdapter(
     private val settingsViewModel: SettingsViewModel,
-    private val lifecycleScope: CoroutineScope
+    private val lifecycleScope: CoroutineScope,
+    private val onItemClicked: (String) -> Unit
 ) : ListAdapter<WeatherEntity, FavouritesAdapter.FavouritesViewHolder>(FavouritesDiffCallback()) {
 
     class FavouritesDiffCallback : DiffUtil.ItemCallback<WeatherEntity>() {
@@ -49,10 +51,15 @@ class FavouritesAdapter(
     inner class FavouritesViewHolder(private val binding: ItemFavouriteBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("DefaultLocale")
         fun bind(weatherEntity: WeatherEntity) {
             val animation: Animation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.scale_in_animation)
             binding.root.startAnimation(animation)
+
+            binding.root.setOnClickListener {
+                onItemClicked(weatherEntity.cityName)
+            }
 
             lifecycleScope.launch(Dispatchers.Main) {
                 val unit = settingsViewModel.getTemperatureUnit()

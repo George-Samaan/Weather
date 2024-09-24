@@ -16,5 +16,8 @@ data class WeatherEntity(
     val clouds: Int,
     val sunrise: Long,
     val sunset: Long,
-    val date: String
+    val date: String,
+    val latitude: Double,
+    val longitude: Double,
+    val lottie: Int
 )

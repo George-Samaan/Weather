@@ -2,6 +2,7 @@ package com.example.iti.ui.favourites.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import com.example.iti.ui.favourites.viewModel.FavouritesAdapter
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
 import com.example.iti.ui.googleMaps.GoogleMapsActivity
+import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
 import kotlinx.coroutines.launch
@@ -58,7 +60,13 @@ class FavouritesActivity : AppCompatActivity() {
     }
 
     private fun setUpRecyclerViews() {
-        favouritesAdapter = FavouritesAdapter(settingsViewModel, lifecycleScope)
+        favouritesAdapter = FavouritesAdapter(settingsViewModel, lifecycleScope) { cityName ->
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            intent.putExtra("CITY_KEY", cityName)
+            Log.e("FavouritesActivity", "City Name: $cityName")
+            startActivity(intent)
+        }
+
         binding.rvFavs.layoutManager = LinearLayoutManager(this)
         binding.rvFavs.adapter = favouritesAdapter
     }
