@@ -1,6 +1,9 @@
 package com.example.iti.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -55,4 +58,19 @@ object Helpers {
         calendar.time = date
         return calendar.get(java.util.Calendar.HOUR_OF_DAY)  // Get hour in 24-hour format
     }
+
+    // Function to check network availability
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            else -> false
+        }
+    }
+
+
 }

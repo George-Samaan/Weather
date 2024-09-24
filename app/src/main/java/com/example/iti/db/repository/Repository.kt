@@ -23,5 +23,6 @@ interface Repository {
     fun getAllWeatherData(): Flow<List<WeatherEntity>>
     suspend fun getFirstWeatherItem(): WeatherEntity?
     suspend fun deleteWeather(weather: WeatherEntity)
+    suspend fun getWeatherCity(cityName: String): WeatherEntity?
 
 }

@@ -21,4 +21,8 @@ class LocalDataSourceImpl(private val weatherDao: WeatherDao) : LocalDataSource 
         return weatherDao.deleteWeather(weather)
     }
 
+    override suspend fun getWeatherCity(cityName: String): WeatherEntity? {
+        return weatherDao.getWeatherByCity(cityName)
+    }
+
 }

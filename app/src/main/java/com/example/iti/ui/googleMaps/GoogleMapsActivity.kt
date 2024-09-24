@@ -173,6 +173,15 @@ class GoogleMapsActivity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
         }
 
+        bottomSheetBinding.setAsHome.setOnClickListener {
+            val intent = Intent(this, HomeScreenActivity::class.java)
+            intent.putExtra("latitude", latLng.latitude)
+            intent.putExtra("longitude", latLng.longitude)
+            intent.putExtra("HOMESCREEN", false)
+            startActivity(intent)
+            finish()
+        }
+
         bottomSheetBinding.viewButton.setOnClickListener {
             val intent = Intent(this, HomeScreenActivity::class.java)
             intent.putExtra("latitude", latLng.latitude)

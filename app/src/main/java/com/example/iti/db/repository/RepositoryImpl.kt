@@ -61,4 +61,8 @@ class RepositoryImpl(
         return localDataSource.deleteWeather(weather)
     }
 
+    override suspend fun getWeatherCity(cityName: String): WeatherEntity? {
+        return localDataSource.getWeatherCity(cityName)
+    }
+
 }
