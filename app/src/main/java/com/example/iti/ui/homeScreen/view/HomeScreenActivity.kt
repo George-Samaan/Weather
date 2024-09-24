@@ -223,7 +223,16 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvTempMax.text = String.format("%.0f°%s", maxTemp, getUnitSymbol(unit))
 
         //update weather details
-        binding.tvCityName.text = city
+        val cityName = city.trim()
+        val words = cityName.split(" ")
+
+        if (words.size > 2) {
+            val firstLine = words.take(2).joinToString(" ") // First two words
+            val secondLine = words.drop(2).joinToString(" ") // Remaining words
+            binding.tvCityName.text = "$firstLine\n$secondLine"
+        } else {
+            binding.tvCityName.text = cityName // If it's 2 words or less, keep it as is
+        }
         binding.tvWeatherStatus.text = weather.weather[0].description
             .split(" ")
             .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
