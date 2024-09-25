@@ -16,6 +16,8 @@ interface Repository {
     fun setTemperatureUnit(unit: String)
     fun getWindSpeedUnit(): String
     fun setWindSpeedUnit(unit: String)
+    fun saveLocation(latitude: Float, longitude: Float)
+    fun getLocation(): Pair<Float, Float>?
 
 
     //local database

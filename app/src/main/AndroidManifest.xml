@@ -35,7 +35,7 @@
             android:value="${MAPS_API_KEY}" />
 
         <activity
-            android:name=".ui.googleMaps.GoogleMapsActivity"
+            android:name=".ui.googleMaps.view.GoogleMapsActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApp.Bg" />
         <activity

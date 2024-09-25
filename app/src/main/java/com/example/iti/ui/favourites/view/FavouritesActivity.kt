@@ -21,13 +21,13 @@ import com.example.iti.db.local.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase
-import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSourceImpl
 import com.example.iti.model.WeatherEntity
 import com.example.iti.network.ApiClient
 import com.example.iti.ui.favourites.viewModel.FavouritesAdapter
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
-import com.example.iti.ui.googleMaps.GoogleMapsActivity
+import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
@@ -40,7 +40,7 @@ class FavouritesActivity : AppCompatActivity() {
         FavouritesViewModelFactory(
             RepositoryImpl(
                 remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
-                settingsDataSource = SettingsDataSourceImpl(
+                sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
@@ -53,7 +53,7 @@ class FavouritesActivity : AppCompatActivity() {
         SettingsViewModelFactory(
             RepositoryImpl(
                 remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
-                settingsDataSource = SettingsDataSourceImpl(
+                sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
