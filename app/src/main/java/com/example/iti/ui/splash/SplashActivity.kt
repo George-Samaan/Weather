@@ -18,7 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.iti.databinding.ActivitySplashBinding
-import com.example.iti.ui.googleMaps.GoogleMapsActivity
+import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback

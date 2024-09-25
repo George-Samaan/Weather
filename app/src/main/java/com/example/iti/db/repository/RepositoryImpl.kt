@@ -2,7 +2,7 @@ package com.example.iti.db.repository
 
 import com.example.iti.db.local.LocalDataSource
 import com.example.iti.db.remote.RemoteDataSource
-import com.example.iti.db.sharedPrefrences.SettingsDataSource
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSource
 import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 class RepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-    private val settingsDataSource: SettingsDataSource,
+    private val sharedPrefsDataSource: SharedPrefsDataSource,
     private val localDataSource: LocalDataSource
 ) : Repository {
 
@@ -30,20 +30,31 @@ class RepositoryImpl(
     // SharedPrefs Methods
 
     override fun getTemperatureUnit(): String {
-        return settingsDataSource.getTemperatureUnit()
+        return sharedPrefsDataSource.getTemperatureUnit()
     }
 
     override fun setTemperatureUnit(unit: String) {
-        return settingsDataSource.setTemperatureUnit(unit)
+        return sharedPrefsDataSource.setTemperatureUnit(unit)
     }
 
     override fun getWindSpeedUnit(): String {
-        return settingsDataSource.getWindSpeedUnit()
+        return sharedPrefsDataSource.getWindSpeedUnit()
     }
 
     override fun setWindSpeedUnit(unit: String) {
-        return settingsDataSource.setWindSpeedUnit(unit)
+        return sharedPrefsDataSource.setWindSpeedUnit(unit)
     }
+
+    override fun saveLocation(latitude: Float, longitude: Float) {
+        sharedPrefsDataSource.saveLocation(latitude, longitude)
+    }
+
+    override fun getLocation(): Pair<Float, Float>? {
+        return sharedPrefsDataSource.getLocation()
+    }
+
+
+    //Local DataSource
 
     override suspend fun insertWeather(weather: WeatherEntity) {
         return localDataSource.insertWeather(weather)

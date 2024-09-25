@@ -1,12 +1,21 @@
-package com.example.iti.ui.googleMaps
+package com.example.iti.ui.googleMaps.view
 
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
 import com.example.iti.databinding.BottomSheetLocationBinding
+import com.example.iti.db.local.LocalDataSourceImpl
+import com.example.iti.db.remote.RemoteDataSourceImpl
+import com.example.iti.db.repository.RepositoryImpl
+import com.example.iti.db.room.AppDatabase
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSourceImpl
+import com.example.iti.network.ApiClient
+import com.example.iti.ui.googleMaps.viewModel.MapsViewModel
+import com.example.iti.ui.googleMaps.viewModel.MapsViewModelFactory
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -19,6 +28,18 @@ import java.io.IOException
 import java.util.Locale
 
 class GoogleMapsActivity : AppCompatActivity() {
+    private val mapsViewModel: MapsViewModel by viewModels {
+        MapsViewModelFactory(
+            RepositoryImpl(
+                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+                sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                    this.getSharedPreferences("homeScreen", MODE_PRIVATE)
+                ),
+                localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
+            )
+        )
+    }
+
     /*private lateinit var placesClient: PlacesClient
     private lateinit var token: AutocompleteSessionToken
     private lateinit var predictions: List<AutocompletePrediction>*/
@@ -159,7 +180,6 @@ class GoogleMapsActivity : AppCompatActivity() {
         val bottomSheetBinding = BottomSheetLocationBinding.inflate(layoutInflater)
         val bottomSheetDialog = BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetBinding.root)
-        val sharedPreferences = getSharedPreferences("homeScreen", MODE_PRIVATE)
 
         bottomSheetBinding.latitudeValue.text = latLng.latitude.toString()
         bottomSheetBinding.longitudeValue.text = latLng.longitude.toString()
@@ -168,11 +188,9 @@ class GoogleMapsActivity : AppCompatActivity() {
             bottomSheetDialog.dismiss()
         }
         bottomSheetBinding.setAsHome.setOnClickListener {
-            with(sharedPreferences.edit()) {
-                putFloat("latitude", latLng.latitude.toFloat())
-                putFloat("longitude", latLng.longitude.toFloat())
-                apply()
-            }
+            //using shared prefs here
+            mapsViewModel.saveLocation(latLng.latitude.toFloat(), latLng.longitude.toFloat())
+
             val intent = Intent(this, HomeScreenActivity::class.java)
             intent.putExtra("latitude", latLng.latitude)
             intent.putExtra("longitude", latLng.longitude)

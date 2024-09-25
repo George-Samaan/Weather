@@ -53,7 +53,7 @@ object Helpers {
     }
 
     fun getHourFromUnixTime(unixTime: Long): Int {
-        val date = java.util.Date(unixTime * 1000L)
+        val date = Date(unixTime * 1000L)
         val calendar = java.util.Calendar.getInstance()
         calendar.time = date
         return calendar.get(java.util.Calendar.HOUR_OF_DAY)  // Get hour in 24-hour format

@@ -16,7 +16,7 @@ import com.example.iti.db.local.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase
-import com.example.iti.db.sharedPrefrences.SettingsDataSourceImpl
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSourceImpl
 import com.example.iti.model.DailyForecastElement
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
@@ -26,7 +26,7 @@ import com.example.iti.network.ApiState
 import com.example.iti.ui.favourites.view.FavouritesActivity
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
-import com.example.iti.ui.googleMaps.GoogleMapsActivity
+import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModel
 import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
 import com.example.iti.ui.settings.view.SettingsActivity
@@ -480,7 +480,7 @@ class HomeScreenActivity : AppCompatActivity() {
     }
     private fun getRepository() = RepositoryImpl(
         remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
-        settingsDataSource = SettingsDataSourceImpl(
+        sharedPrefsDataSource = SharedPrefsDataSourceImpl(
             this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
         ),
         localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
