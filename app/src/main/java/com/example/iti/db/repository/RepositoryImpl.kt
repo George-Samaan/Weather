@@ -52,6 +52,13 @@ class RepositoryImpl(
     override fun getLocation(): Pair<Float, Float>? {
         return sharedPrefsDataSource.getLocation()
     }
+    override fun getNotificationPreference(): Boolean {
+        return sharedPrefsDataSource.getNotificationPreference()
+    }
+
+    override fun setNotificationPreference(enabled: Boolean) {
+        return sharedPrefsDataSource.setNotificationPreference(enabled)
+    }
 
 
     //Local DataSource
@@ -64,10 +71,6 @@ class RepositoryImpl(
         return localDataSource.getAllWeatherData()
     }
 
-    override suspend fun getFirstWeatherItem(): WeatherEntity? {
-        return localDataSource.getFirstWeatherItem()
-    }
-
     override suspend fun deleteWeather(weather: WeatherEntity) {
         return localDataSource.deleteWeather(weather)
     }
@@ -75,5 +78,4 @@ class RepositoryImpl(
     override suspend fun getWeatherCity(cityName: String): WeatherEntity? {
         return localDataSource.getWeatherCity(cityName)
     }
-
 }

@@ -23,11 +23,6 @@ class FavouritesViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    suspend fun getFirstWeatherData(): WeatherEntity? {
-        return repository.getFirstWeatherItem()
-
-    }
-
     suspend fun getWeatherCity(cityName: String): WeatherEntity? {
         return repository.getWeatherCity(cityName)
     }

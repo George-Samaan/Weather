@@ -9,4 +9,7 @@ interface SharedPrefsDataSource {
 
     fun saveLocation(latitude: Float, longitude: Float)
     fun getLocation(): Pair<Float, Float>?
+
+    fun getNotificationPreference(): Boolean
+    fun setNotificationPreference(enabled: Boolean)
 }
