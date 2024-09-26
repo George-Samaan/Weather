@@ -37,6 +37,4 @@ class RemoteDataSourceImpl(private val apiService: ApiServices) : RemoteDataSour
             throw Throwable("Error retrieving daily forecast data")
         }
     }
-
-
 }

@@ -19,4 +19,11 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
     fun setWindSpeedUnit(unit: String) {
         repository.setWindSpeedUnit(unit)
     }
+    fun getNotificationPreference(): Boolean {
+        return repository.getNotificationPreference()
+    }
+
+    fun setNotificationPreference(enabled: Boolean) {
+        repository.setNotificationPreference(enabled)
+    }
 }

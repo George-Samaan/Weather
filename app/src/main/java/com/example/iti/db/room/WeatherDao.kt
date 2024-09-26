@@ -16,9 +16,6 @@ interface WeatherDao {
     @Query("SELECT * FROM Weather")
     fun getAllWeatherData(): Flow<List<WeatherEntity>>
 
-    @Query("SELECT * FROM Weather LIMIT 1")
-    suspend fun getFirstWeatherItem(): WeatherEntity?
-
     @Delete
     suspend fun deleteWeather(weather: WeatherEntity)
 

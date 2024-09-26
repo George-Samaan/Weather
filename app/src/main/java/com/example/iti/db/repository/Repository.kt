@@ -18,12 +18,14 @@ interface Repository {
     fun setWindSpeedUnit(unit: String)
     fun saveLocation(latitude: Float, longitude: Float)
     fun getLocation(): Pair<Float, Float>?
+    fun getNotificationPreference(): Boolean
+    fun setNotificationPreference(enabled: Boolean)
+
 
 
     //local database
     suspend fun insertWeather(weather: WeatherEntity)
     fun getAllWeatherData(): Flow<List<WeatherEntity>>
-    suspend fun getFirstWeatherItem(): WeatherEntity?
     suspend fun deleteWeather(weather: WeatherEntity)
     suspend fun getWeatherCity(cityName: String): WeatherEntity?
 

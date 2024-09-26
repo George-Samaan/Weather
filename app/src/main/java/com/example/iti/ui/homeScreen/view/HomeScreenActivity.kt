@@ -23,6 +23,7 @@ import com.example.iti.model.Weather
 import com.example.iti.model.WeatherEntity
 import com.example.iti.network.ApiClient
 import com.example.iti.network.ApiState
+import com.example.iti.pushNotifications.NotificationServices.notificationServices
 import com.example.iti.ui.favourites.view.FavouritesActivity
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
@@ -86,6 +87,7 @@ class HomeScreenActivity : AppCompatActivity() {
         if (!isNetworkAvailable(this)) {
             fetchWeatherDataFromSharedPreferences()
         }
+        notificationServices(this, passedLat, passedLong)
     }
 
     private fun setUpViews() {
@@ -103,6 +105,7 @@ class HomeScreenActivity : AppCompatActivity() {
             startActivity(Intent(this, FavouritesActivity::class.java))
         }
     }
+
     private fun setUpAdapters() {
         dailyAdapter = DailyAdapter(settingsViewModel, lifecycleScope)
         hourlyAdapter = HourlyAdapter(settingsViewModel, lifecycleScope)
@@ -157,6 +160,7 @@ class HomeScreenActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun setUpCollector() {
         gettingWeatherDataFromViewModel()
         gettingHourlyWeatherDataFromViewModel()
@@ -288,6 +292,7 @@ class HomeScreenActivity : AppCompatActivity() {
             lottieAnimation
         )
     }
+
     private fun onSaveButtonClick(
         currentTemp: Double,
         minTemp: Double,

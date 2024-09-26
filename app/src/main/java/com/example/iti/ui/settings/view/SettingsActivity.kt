@@ -1,8 +1,14 @@
 package com.example.iti.ui.settings.view
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationManagerCompat
 import com.example.iti.databinding.ActivitySettingsBinding
 import com.example.iti.db.local.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
@@ -48,7 +54,62 @@ class SettingsActivity : AppCompatActivity() {
             "Meter/Second" -> binding.radioMeterPerSecond.isChecked = true
             "Miles/Hour" -> binding.radioMilesPerHour.isChecked = true
         }
+
+        onTurnOnNotificationsClick()
+        onTurnOffNotificationsClick()
+
+        val notificationsEnabled = settingsViewModel.getNotificationPreference()
+        when (notificationsEnabled) {
+            true -> binding.radioOnNotification.isChecked = true
+            false -> binding.radioOffNotification.isChecked = true
+        }
     }
+
+    private fun onTurnOffNotificationsClick() {
+        binding.radioOffNotification.setOnClickListener {
+            handleNotificationPreference(false)
+        }
+    }
+
+    private fun onTurnOnNotificationsClick() {
+        binding.radioOnNotification.setOnClickListener {
+            handleNotificationPreference(true)
+        }
+    }
+
+    private fun handleNotificationPreference(enable: Boolean) {
+        if (enable) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                    requestPermissions(
+                        arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                        1001
+                    )
+                }
+            }
+        } else {
+            val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, this.packageName)
+            startActivity(intent)
+        }
+        settingsViewModel.setNotificationPreference(enable)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e("TAG", "Permission Granted")
+                handleNotificationPreference(true)
+            } else {
+                Log.e("TAG", "Permission Denied")
+                handleNotificationPreference(false)
+            }
+        }
+    }
+
 
     private fun onWindSpeedUnitSelection() {
         binding.radioMeterPerSecond.setOnClickListener {
@@ -76,4 +137,16 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val areSystemNotificationsEnabled =
+            NotificationManagerCompat.from(this).areNotificationsEnabled()
+        if (areSystemNotificationsEnabled) {
+            binding.radioOnNotification.isChecked = true
+            settingsViewModel.setNotificationPreference(true)
+        } else {
+            binding.radioOffNotification.isChecked = true
+            settingsViewModel.setNotificationPreference(false)
+        }
+    }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -212,8 +213,17 @@ class FavouritesActivity : AppCompatActivity() {
 
     private fun setUpObservers() {
         lifecycleScope.launch {
-            favouritesViewModel.allWeatherData.collect {
-                favouritesAdapter.submitList(it)
+            favouritesViewModel.allWeatherData.collect { weatherList ->
+                if (weatherList.isEmpty()) {
+                    binding.tvNoItems.visibility = View.VISIBLE
+                    binding.imcNoSaved.visibility = View.VISIBLE
+                    binding.rvFavs.visibility = View.GONE
+                } else {
+                    binding.tvNoItems.visibility = View.GONE
+                    binding.imcNoSaved.visibility = View.GONE
+                    binding.rvFavs.visibility = View.VISIBLE
+                    favouritesAdapter.submitList(weatherList)
+                }
             }
         }
     }

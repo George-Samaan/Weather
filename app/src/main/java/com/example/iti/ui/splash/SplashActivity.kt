@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.iti.databinding.ActivitySplashBinding
+import com.example.iti.pushNotifications.Permission
 import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -59,6 +60,8 @@ class SplashActivity : AppCompatActivity() {
             }
 
         Handler(mainLooper).postDelayed({ checkLocationPermission() }, 3000)
+        Permission.NotificationPermission.requestNotificationPermission(this)
+
     }
 
     // Check if location permission is granted
