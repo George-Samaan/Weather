@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
 import com.example.iti.databinding.ActivityGoogleMapsBinding
 import com.example.iti.databinding.BottomSheetLocationBinding
-import com.example.iti.db.local.LocalDataSourceImpl
+import com.example.iti.db.local.favourites.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase

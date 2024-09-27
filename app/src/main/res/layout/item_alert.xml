@@ -19,32 +19,20 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/tv_tempunit_label"
+                android:id="@+id/date_time_alarm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Name of Location"
+                android:text="29 Sept 2024"
                 android:textColor="@color/white"
                 android:textSize="23sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_tempunit_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="36°"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
-
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

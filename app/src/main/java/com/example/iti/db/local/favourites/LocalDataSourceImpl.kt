@@ -1,4 +1,4 @@
-package com.example.iti.db.local
+package com.example.iti.db.local.favourites
 
 import com.example.iti.db.room.WeatherDao
 import com.example.iti.model.WeatherEntity

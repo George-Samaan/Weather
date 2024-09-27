@@ -12,7 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.iti.databinding.ActivityHomeScreenBinding
-import com.example.iti.db.local.LocalDataSourceImpl
+import com.example.iti.db.local.favourites.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase
@@ -24,6 +24,7 @@ import com.example.iti.model.WeatherEntity
 import com.example.iti.network.ApiClient
 import com.example.iti.network.ApiState
 import com.example.iti.pushNotifications.NotificationServices.notificationServices
+import com.example.iti.ui.alert.view.AlertActivity
 import com.example.iti.ui.favourites.view.FavouritesActivity
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModel
 import com.example.iti.ui.favourites.viewModel.FavouritesViewModelFactory
@@ -103,6 +104,9 @@ class HomeScreenActivity : AppCompatActivity() {
         }
         binding.btnFavourites.setOnClickListener {
             startActivity(Intent(this, FavouritesActivity::class.java))
+        }
+        binding.btnAlert.setOnClickListener {
+            startActivity(Intent(this, AlertActivity::class.java))
         }
     }
 
@@ -408,7 +412,7 @@ class HomeScreenActivity : AppCompatActivity() {
     private fun disableViewsForFavouritesViewer() {
         binding.btnMaps.visibility = View.GONE
         binding.btnFavourites.visibility = View.GONE
-        binding.btnHomeNotification.visibility = View.GONE
+        binding.btnAlert.visibility = View.GONE
         binding.btnSave.visibility = View.GONE
         binding.btnSettings.visibility = View.GONE
     }
@@ -522,7 +526,7 @@ class HomeScreenActivity : AppCompatActivity() {
         if (isViewOnly) {
             binding.btnMaps.visibility = View.GONE
             binding.btnFavourites.visibility = View.GONE
-            binding.btnHomeNotification.visibility = View.GONE
+            binding.btnAlert.visibility = View.GONE
             binding.btnSave.visibility = View.VISIBLE
         }
     }

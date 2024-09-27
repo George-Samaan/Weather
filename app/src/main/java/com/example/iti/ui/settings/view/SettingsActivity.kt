@@ -10,7 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
 import com.example.iti.databinding.ActivitySettingsBinding
-import com.example.iti.db.local.LocalDataSourceImpl
+import com.example.iti.db.local.favourites.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase
