@@ -202,7 +202,6 @@ class HomeScreenActivity : AppCompatActivity() {
                         slideInAndScaleView(binding.cardDaysDetails)
 //                        binding.cardDaysDetails.visibility = View.VISIBLE
                         setVisibilityOfViewsOnScreen(false)
-
                         val weatherData = apiState.data as Weather
                         launch {
                             updateUi(weatherData) // Update UI
@@ -215,7 +214,6 @@ class HomeScreenActivity : AppCompatActivity() {
                         setVisibilityOfViewsOnScreen(false)
                         binding.rvHourlyDegrees.visibility = View.GONE
                         binding.rvDetailedDays.visibility = View.GONE
-
                         Log.e("WeatherError", "Error retrieving weather data ${apiState.message}")
                     }
                 }
@@ -374,6 +372,7 @@ class HomeScreenActivity : AppCompatActivity() {
                     }
 
                     is ApiState.Success -> {
+                        delay(600)
                         binding.rvDetailedDays.visibility = View.VISIBLE
                         binding.cardDaysDetails.visibility = View.VISIBLE
                         val dailyList =
@@ -559,5 +558,4 @@ class HomeScreenActivity : AppCompatActivity() {
         )
         snackBar.show()
     }
-
 }

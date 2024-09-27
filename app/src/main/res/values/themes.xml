@@ -9,5 +9,21 @@
         <item name="colorPrimaryDark">#021526</item> <!-- Optional: Status bar color -->
     </style>
 
+    <!-- Custom style for DatePickerDialog -->
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#01243C</item> <!-- Cyan accent color for highlights -->
+        <item name="android:textColorPrimary">#FFFFFF</item> <!-- White for primary text -->
+        <item name="android:textColorSecondary">#FFCC00</item> <!-- Yellow for button text -->
+        <item name="android:background">#053866</item> <!-- Dark blue for dialog background -->
+    </style>
+
+    <!-- Custom style for TimePickerDialog -->
+    <style name="CustomTimePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#053866</item> <!-- Cyan accent color for highlights -->
+        <item name="android:textColorPrimary">#000000</item> <!-- White for primary text -->
+        <item name="android:textColorSecondary">#FFCC00</item> <!-- Yellow for button text -->
+        <item name="android:background">#053866</item> <!-- Dark blue for dialog background -->
+    </style>
+
     <style name="Theme.Weather" parent="Base.Theme.Weather" />
 </resources>

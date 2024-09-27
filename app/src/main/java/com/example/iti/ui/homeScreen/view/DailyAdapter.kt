@@ -38,7 +38,7 @@ class DailyAdapter(
 
     override fun onBindViewHolder(holder: DailyAdapter.DailyWeatherViewHolder, position: Int) {
         val animation =
-            AnimationUtils.loadAnimation(holder.itemView.context, R.anim.scale_in_animation)
+            AnimationUtils.loadAnimation(holder.itemView.context, R.anim.slide_in_bottom)
         holder.bind(getItem(position))
         holder.itemView.startAnimation(animation)
     }
