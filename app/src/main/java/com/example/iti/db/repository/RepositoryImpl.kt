@@ -1,6 +1,6 @@
 package com.example.iti.db.repository
 
-import com.example.iti.db.local.LocalDataSource
+import com.example.iti.db.local.favourites.LocalDataSource
 import com.example.iti.db.remote.RemoteDataSource
 import com.example.iti.db.sharedPrefrences.SharedPrefsDataSource
 import com.example.iti.model.DailyForecast

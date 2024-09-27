@@ -5,9 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Weather"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.alert.view.AlertActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MyApp.Bg" />
         <activity
             android:name=".ui.favourites.view.FavouritesActivity"
             android:exported="false"
@@ -36,6 +44,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
+
+        <service
+            android:name=".alert.AlarmService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <receiver android:name=".alert.DismissReceiver" />
+
+        <receiver android:name=".alert.AlarmReceiver" />
+
 
         <activity
             android:name=".ui.googleMaps.view.GoogleMapsActivity"

@@ -1,4 +1,4 @@
-package com.example.iti.db.local
+package com.example.iti.db.local.favourites
 
 import com.example.iti.model.WeatherEntity
 import kotlinx.coroutines.flow.Flow

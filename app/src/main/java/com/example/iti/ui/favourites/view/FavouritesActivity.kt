@@ -1,24 +1,19 @@
 package com.example.iti.ui.favourites.view
 
+import SwipeToDeleteCallback
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.iti.R
 import com.example.iti.databinding.ActivityFavouritesBinding
-import com.example.iti.db.local.LocalDataSourceImpl
+import com.example.iti.db.local.favourites.LocalDataSourceImpl
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.repository.RepositoryImpl
 import com.example.iti.db.room.AppDatabase
@@ -81,116 +76,16 @@ class FavouritesActivity : AppCompatActivity() {
         binding.rvFavs.layoutManager = LinearLayoutManager(this)
         binding.rvFavs.adapter = favouritesAdapter
 
-        val itemTouchHelperCallback = object :
-            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-
-            private val deleteIcon =
-                ContextCompat.getDrawable(this@FavouritesActivity, R.drawable.ic_delete)
-            private val intrinsicWidth = deleteIcon?.intrinsicWidth ?: 0
-            private val intrinsicHeight = deleteIcon?.intrinsicHeight ?: 0
-            private val backgroundPaint = Paint().apply {
-                color = Color.parseColor("#8AFF0000") // Red color
-                style = Paint.Style.FILL
-            }
-            private val cornerRadius = 28f // Match the corner radius of the CardView
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
+        // Use the reusable swipe-to-delete callback
+        val swipeToDeleteCallback = SwipeToDeleteCallback(
+            onSwipedAction = { position ->
                 val weatherEntity = favouritesAdapter.currentList[position]
                 showDeleteConfirmationDialog(weatherEntity, position)
-            }
+            },
+            iconResId = R.drawable.ic_delete // Pass the delete icon resource
+        )
 
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                val itemView = viewHolder.itemView
-                val itemHeight = itemView.bottom - itemView.top
-                val cardMarginHorizontal = 16 // The horizontal margin for the CardView
-                val cardPaddingVertical = 50
-                val isCancelled = dX == 0f && !isCurrentlyActive
-
-                if (isCancelled) {
-                    clearCanvas(
-                        c,
-                        itemView.right + dX,
-                        itemView.top.toFloat(),
-                        itemView.right.toFloat(),
-                        itemView.bottom.toFloat()
-                    )
-                    super.onChildDraw(
-                        c,
-                        recyclerView,
-                        viewHolder,
-                        dX,
-                        dY,
-                        actionState,
-                        isCurrentlyActive
-                    )
-                    return
-                }
-
-                // Adjust background to fit the CardView
-                val left = itemView.right + dX.toInt() + cardMarginHorizontal
-                val right = itemView.right - cardMarginHorizontal
-                val top = itemView.top + cardPaddingVertical
-                val bottom = itemView.bottom - itemView.paddingBottom
-                val rectF = RectF(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
-
-                // Draw red background with corner radius
-                c.drawRoundRect(rectF, cornerRadius, cornerRadius, backgroundPaint)
-
-                // Draw the delete icon
-                val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
-                val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
-                val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth
-                val deleteIconRight = itemView.right - deleteIconMargin
-                val deleteIconBottom = deleteIconTop + intrinsicHeight
-
-                deleteIcon?.setBounds(
-                    deleteIconLeft,
-                    deleteIconTop,
-                    deleteIconRight,
-                    deleteIconBottom
-                )
-                deleteIcon?.draw(c)
-
-                super.onChildDraw(
-                    c,
-                    recyclerView,
-                    viewHolder,
-                    dX,
-                    dY,
-                    actionState,
-                    isCurrentlyActive
-                )
-            }
-
-            private fun clearCanvas(
-                c: Canvas?,
-                left: Float,
-                top: Float,
-                right: Float,
-                bottom: Float
-            ) {
-                c?.drawRect(left, top, right, bottom, Paint())
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvFavs)
     }
 
@@ -200,7 +95,6 @@ class FavouritesActivity : AppCompatActivity() {
             .setMessage("Are you sure you want to delete this location?")
             .setPositiveButton("Yes") { dialog, _ ->
                 favouritesViewModel.deleteWeatherData(weatherEntity)
-//                favouritesAdapter.notifyItemRemoved(position)
                 dialog.dismiss()
             }
             .setNegativeButton("No") { dialog, _ ->
