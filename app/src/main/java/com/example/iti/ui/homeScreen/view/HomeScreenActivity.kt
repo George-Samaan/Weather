@@ -1,5 +1,6 @@
 package com.example.iti.ui.homeScreen.view
 
+import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -45,6 +46,7 @@ import com.example.iti.utils.HomeScreenHelper.checkWeatherDescription
 import com.example.iti.utils.HomeScreenHelper.dynamicTextAnimation
 import com.example.iti.utils.HomeScreenHelper.slideInAndScaleView
 import com.example.iti.utils.HomeScreenHelper.slideInFromLeft
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -87,6 +89,7 @@ class HomeScreenActivity : AppCompatActivity() {
         visibilityForViewerPage()
         if (!isNetworkAvailable(this)) {
             fetchWeatherDataFromSharedPreferences()
+            showSnackBar()
         }
         notificationServices(this, passedLat, passedLong)
     }
@@ -366,15 +369,21 @@ class HomeScreenActivity : AppCompatActivity() {
             weatherViewModel.dailyForecastDataStateFlow.collect { apiState ->
                 when (apiState) {
                     is ApiState.Loading -> {
+                        binding.rvDetailedDays.visibility = View.GONE
+                        binding.cardDaysDetails.visibility = View.GONE
                     }
 
                     is ApiState.Success -> {
+                        binding.rvDetailedDays.visibility = View.VISIBLE
+                        binding.cardDaysDetails.visibility = View.VISIBLE
                         val dailyList =
                             (apiState.data as List<*>).filterIsInstance<DailyForecastElement>()
                         dailyAdapter.submitList(dailyList)
                     }
 
                     is ApiState.Failure -> {
+                        binding.rvDetailedDays.visibility = View.GONE
+                        binding.cardDaysDetails.visibility = View.GONE
                         Log.e(
                             "WeatherError",
                             "Error retrieving daily forecast data ${apiState.message}"
@@ -478,15 +487,25 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun swipeToRefresh() {
         binding.swipeToRefresh.setOnRefreshListener {
-            fetchDataBasedOnLatAndLong()
-            binding.swipeToRefresh.isRefreshing = false
+            if (isNetworkAvailable(this)) {
+                fetchDataBasedOnLatAndLong()
+                binding.swipeToRefresh.isRefreshing = false
+            } else {
+                showSnackBar()
+                binding.swipeToRefresh.isRefreshing = false
+            }
         }
     }
+
     override fun onResume() {
         super.onResume()
         fetchDataBasedOnLatAndLong()
         setUpAdapters()
+        if (!isNetworkAvailable(this)) {
+            showSnackBar()
+        }
     }
+
     private fun getRepository() = RepositoryImpl(
         remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
         sharedPrefsDataSource = SharedPrefsDataSourceImpl(
@@ -494,6 +513,7 @@ class HomeScreenActivity : AppCompatActivity() {
         ),
         localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
     )
+
     private fun setVisibilityOfViewsOnScreen(isLoading: Boolean) {
         if (isLoading) {
             binding.tvCityName.visibility = View.GONE
@@ -530,4 +550,14 @@ class HomeScreenActivity : AppCompatActivity() {
             binding.btnSave.visibility = View.VISIBLE
         }
     }
+
+    private fun showSnackBar() {
+        val snackBar = Snackbar.make(
+            findViewById(R.id.content),
+            "No network connection. Data loaded from cache.",
+            Snackbar.LENGTH_LONG
+        )
+        snackBar.show()
+    }
+
 }
