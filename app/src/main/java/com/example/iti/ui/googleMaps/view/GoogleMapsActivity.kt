@@ -3,6 +3,11 @@ package com.example.iti.ui.googleMaps.view
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.iti.R
@@ -39,11 +44,6 @@ class GoogleMapsActivity : AppCompatActivity() {
             )
         )
     }
-
-    /*private lateinit var placesClient: PlacesClient
-    private lateinit var token: AutocompleteSessionToken
-    private lateinit var predictions: List<AutocompletePrediction>*/
-
     private var lastMarker: Marker? = null // Add a variable to store the last marker
     private var map: GoogleMap? = null
     private lateinit var binding: ActivityGoogleMapsBinding
@@ -52,12 +52,6 @@ class GoogleMapsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityGoogleMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Initialize Google Places API
-        /*      Places.initialize(applicationContext, "AIzaSyBjX2M6vs7EUkgW32X1av0kp1hYvIlOyBM")
-              placesClient = Places.createClient(this)
-              token = AutocompleteSessionToken.newInstance()*/
-
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { googleMap ->
             map = googleMap
@@ -65,91 +59,71 @@ class GoogleMapsActivity : AppCompatActivity() {
                 onMapClicked(latLng)
             }
         }
-
-        // Set up Place Autocomplete functionality
-//        setupPlaceAutocomplete()
+        setUpGeocoderSearch()
     }
 
+    private fun setUpGeocoderSearch() {
+        val placeSearch = binding.placeSearch
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line)
+        placeSearch.setAdapter(adapter)
 
-    /*            private fun setupPlaceAutocomplete() {
-                val placeSearch = findViewById<AutoCompleteTextView>(R.id.place_search)
-
-                // Set up a simple ArrayAdapter for displaying predictions
-                val adapter = ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line)
-                placeSearch.setAdapter(adapter)
-
-                // Handle the Enter/Done key
-                placeSearch.setOnEditorActionListener { textView, actionId, keyEvent ->
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
-                        placeSearch.dismissDropDown()
-                        return@setOnEditorActionListener true
-                    }
-                    false
+        placeSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val query = placeSearch.text.toString()
+                if (query.isNotBlank()) {
+                    searchLocation(query, adapter)
                 }
+                return@setOnEditorActionListener true
+            }
+            false
+        }
 
-                // Listen for text input changes
-                placeSearch.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (s != null && s.length > 2) {
-                            // Fetch predictions if the query is longer than 2 characters
-                            getPlacePredictions(s.toString(), adapter)
-                        }
-                    }
-
-                    override fun afterTextChanged(s: Editable?) {}
-                })
-
-                // Handle item click when a user selects a suggestion
-                placeSearch.setOnItemClickListener { parent, view, position, id ->
-                    val prediction = predictions[position]
-                    val placeId = prediction.placeId
-
-                    val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
-                    val placeRequest = FetchPlaceRequest.builder(placeId, placeFields).build()
-
-                    placesClient.fetchPlace(placeRequest)
-                        .addOnSuccessListener { placeResponse ->
-                            val place = placeResponse.place
-                            val latLng = place.latLng
-                            if (latLng != null) {
-                                // Move the camera to the selected place on the map
-                                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            e.printStackTrace()
-                        }
+        placeSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                if (p0.toString().length > 2) {
+                    searchLocation(p0.toString(), adapter)
                 }
             }
 
-            private fun getPlacePredictions(query: String, adapter: ArrayAdapter<String>) {
-                val request = FindAutocompletePredictionsRequest.builder()
-                    .setQuery(query)
-                    .setSessionToken(token)
-                    .build()
+            override fun afterTextChanged(p0: Editable?) {}
+        })
 
-                placesClient.findAutocompletePredictions(request)
-                    .addOnSuccessListener { response ->
-                        adapter.clear()
-                        predictions =
-                            response.autocompletePredictions // Save predictions to the class variable
-                        for (prediction in predictions) {
-                            adapter.add(prediction.getPrimaryText(null).toString())
-                        }
-                        adapter.notifyDataSetChanged()
-
-                        if (predictions.isEmpty()) {
-                            Log.d("GoogleMapsActivity", "No predictions found.")
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        exception.printStackTrace()
-                        Log.e("GoogleMapsActivity", "Failed to fetch predictions: ${exception.message}")
-                    }
+        // Handle item click to zoom on the map
+        placeSearch.setOnItemClickListener { parent, _, position, _ ->
+            val selectedAddress = parent.getItemAtPosition(position) as String
+            val geocoder = Geocoder(this, Locale.getDefault())
+            try {
+                val addresses = geocoder.getFromLocationName(selectedAddress, 1)
+                if (addresses!!.isNotEmpty()) {
+                    val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 7f)
+                    map?.animateCamera(cameraUpdate, 1000, null)
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
 
-    */
+    private fun searchLocation(query: String, adapter: ArrayAdapter<String>) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocationName(query, 5)
+            if (!addresses.isNullOrEmpty()) {
+                val results = addresses.map { it.getAddressLine(0) ?: "No Address Found" }
+                adapter.clear()
+                adapter.addAll(results)
+                adapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     private fun onMapClicked(latLng: LatLng) {
@@ -172,7 +146,6 @@ class GoogleMapsActivity : AppCompatActivity() {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         showLocationBottomSheet(latLng, addressText)
     }
 
@@ -211,10 +184,3 @@ class GoogleMapsActivity : AppCompatActivity() {
         bottomSheetDialog.show()
     }
 }
-
-
-
-
-
-
-

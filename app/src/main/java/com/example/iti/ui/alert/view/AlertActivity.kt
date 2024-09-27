@@ -113,7 +113,7 @@ class AlertActivity : AppCompatActivity() {
 
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
-            this,
+            this, R.style.CustomDatePickerDialog,
             { _, year, monthOfYear, dayOfMonth ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, monthOfYear)
@@ -130,7 +130,7 @@ class AlertActivity : AppCompatActivity() {
 
     private fun showTimePicker(calendar: Calendar) {
         val timePickerDialog = TimePickerDialog(
-            this,
+            this, R.style.CustomTimePickerDialog,
             { _, hourOfDay, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
                 calendar.set(Calendar.MINUTE, minute)
