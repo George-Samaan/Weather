@@ -35,6 +35,12 @@ class AlarmService : Service() {
         super.onDestroy()
         mediaPlayer?.stop()
         mediaPlayer?.release()
+
+        // Remove the overlay if it exists
+        overlayView?.let {
+            windowManager?.removeView(it)
+            overlayView = null
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {

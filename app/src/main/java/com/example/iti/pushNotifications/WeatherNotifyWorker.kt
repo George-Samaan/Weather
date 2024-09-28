@@ -87,7 +87,7 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
 
         // Create Notification
         val notification = NotificationCompat.Builder(context, "WeatherChannel")
-            .setSmallIcon(R.drawable.ic_mist)
+            .setSmallIcon(R.drawable.app_logo)
             .setContentTitle(title)
             .setContentText(content)
             .setLargeIcon(context.getDrawable(imageRes)?.toBitmap())

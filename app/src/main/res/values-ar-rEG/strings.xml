@@ -71,4 +71,5 @@
     <string name="broken_clouds">غيوم متناثرة</string>
     <string name="scattered_clouds">غيوم متفرقة</string>
     <string name="few_clouds">غائم جزئي</string>
+    <string name="weather">الطقس</string>
 </resources>

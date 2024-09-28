@@ -71,4 +71,5 @@
     <string name="broken_clouds">broken clouds</string>
     <string name="scattered_clouds">scattered clouds</string>
     <string name="few_clouds">few clouds</string>
+    <string name="weather">Weather</string>
 </resources>

@@ -45,9 +45,8 @@ class AlarmReceiver : BroadcastReceiver() {
          )
 
          val notification = NotificationCompat.Builder(context, "ALARM_CHANNEL")
-             .setSmallIcon(R.drawable.ic_clear_sky)
-             .setContentTitle("Weather Alert!")
-             .setContentText("Don't forget your weather")
+             .setSmallIcon(R.drawable.app_logo)
+             .setContentText(context.getString(R.string.don_t_forget_to_check_the_weather))
              .setPriority(NotificationCompat.PRIORITY_HIGH)
              .setOngoing(true)
              .addAction(R.drawable.ic_notification, "Dismiss", pendingIntent)
