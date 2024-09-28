@@ -67,6 +67,7 @@
     <string name="overcast_clouds">غيوم قاتمة</string>
     <string name="moderate_rain">مطر متوسط الغزارة</string>
     <string name="light_snow">ثلوج</string>
+    <string name="snow">Snow</string>
     <string name="broken_clouds">غيوم متناثرة</string>
     <string name="scattered_clouds">غيوم متفرقة</string>
     <string name="few_clouds">غائم جزئي</string>

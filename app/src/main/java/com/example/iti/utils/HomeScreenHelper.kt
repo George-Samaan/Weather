@@ -17,6 +17,7 @@ object HomeScreenHelper {
             context.getString(R.string.light_rain) -> R.raw.rain_anim
             context.getString(R.string.moderate_rain) -> R.raw.rain_anim
             context.getString(R.string.light_snow) -> R.raw.snow_anim
+            context.getString(R.string.snow) -> R.raw.snow_anim
             //underTesting
             "thunderstorm" -> R.raw.thunderstorm
             "mist" -> R.raw.mist

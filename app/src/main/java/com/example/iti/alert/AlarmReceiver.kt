@@ -1,9 +1,14 @@
 package com.example.iti.alert
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.NotificationCompat
+import com.example.iti.R
 
 class AlarmReceiver : BroadcastReceiver() {
     @SuppressLint("LaunchActivityFromNotification")
@@ -12,11 +17,11 @@ class AlarmReceiver : BroadcastReceiver() {
             val alarmIntent = Intent(it, AlarmService::class.java)
             it.startService(alarmIntent)
 
-//            createNotification(it)
+            createNotification(it)
         }
     }
 
-    /*    private fun createNotification(context: Context) {
+    private fun createNotification(context: Context) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 val channelId = "ALARM_CHANNEL"
                 val channel = NotificationChannel(
@@ -29,9 +34,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notificationManager.createNotificationChannel(channel)
-            }*/
+            }
 
-    /*     val notificationIntent = Intent(context, DismissReceiver::class.java)
+        val notificationIntent = Intent(context, DismissReceiver::class.java)
          val pendingIntent = PendingIntent.getBroadcast(
              context,
              0,
@@ -52,6 +57,6 @@ class AlarmReceiver : BroadcastReceiver() {
          val notificationManager =
              context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
          notificationManager.notify(1, notification)
-     }*/
+    }
 
 }

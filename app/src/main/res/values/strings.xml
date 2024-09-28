@@ -67,6 +67,7 @@
     <string name="overcast_clouds">overcast clouds</string>
     <string name="moderate_rain">moderate rain</string>
     <string name="light_snow">light snow</string>
+    <string name="snow">snow</string>
     <string name="broken_clouds">broken clouds</string>
     <string name="scattered_clouds">scattered clouds</string>
     <string name="few_clouds">few clouds</string>
