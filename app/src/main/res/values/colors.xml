@@ -3,4 +3,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="fillCard">#6679747E</color>
+    <color name="buttons_">#0A679B</color>
+    <color name="delete_color">#FF0000</color>
 </resources>

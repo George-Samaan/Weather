@@ -48,7 +48,7 @@
             android:id="@+id/dismiss_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="#0A679B"
+            android:backgroundTint="@color/buttons_"
             android:text="@string/dismiss"
             android:textColor="@color/white"
             android:textSize="16sp"

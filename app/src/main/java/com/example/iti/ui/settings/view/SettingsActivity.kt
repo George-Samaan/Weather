@@ -95,7 +95,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showLanguageChangeDialog(languageCode: String) {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.language_change))
             .setMessage(getString(R.string.changing_the_language_will_exit_the_app_please_reopen_the_app_to_see_the_changes))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
@@ -115,10 +115,19 @@ class SettingsActivity : AppCompatActivity() {
             val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
 
             // Change text color
-            buttonOk.setTextColor(resources.getColor(R.color.green, null)) // Change to your desired color
-            buttonCancel.setTextColor(resources.getColor(R.color.red, null)) // Change to your desired color
+            buttonOk.setTextColor(
+                resources.getColor(
+                    R.color.buttons_,
+                    null
+                )
+            ) // Change to your desired color
+            buttonCancel.setTextColor(
+                resources.getColor(
+                    R.color.buttons_,
+                    null
+                )
+            ) // Change to your desired color
         }
-
         dialog.show()
     }
 

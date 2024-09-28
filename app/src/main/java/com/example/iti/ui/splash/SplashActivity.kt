@@ -128,13 +128,21 @@ class SplashActivity : AppCompatActivity() {
 
     // Show AlertDialog to ask if the user wants to enable location services
     private fun showEnableLocationDialog() {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.enable_location_services))
             .setMessage(getString(R.string.location_services_are_required_to_access_the_home_screen_do_you_want_to_enable_them))
             .setPositiveButton(getString(R.string.yes)) { _, _ -> promptEnableLocationServices() }
             .setNegativeButton(getString(R.string.choose_from_maps)) { _, _ -> navigateToGoogleMaps() }
             .setCancelable(false)
-            .show()
+            .create()
+
+        dialog.setOnShowListener {
+            val buttonOk = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            buttonOk.setTextColor(resources.getColor(R.color.buttons_, null))
+            buttonCancel.setTextColor(resources.getColor(R.color.buttons_, null))
+        }
+        dialog.show()
     }
 
     // Prompt user to enable location services by navigating to settings

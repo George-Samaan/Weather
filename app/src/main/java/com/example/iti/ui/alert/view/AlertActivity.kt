@@ -93,7 +93,7 @@ class AlertActivity : AppCompatActivity() {
     }
 
     private fun showDeleteConfirmationDialog(alarm: AlarmEntity, position: Int) {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.delete_alert))
             .setMessage(getString(R.string.are_you_sure_you_want_to_delete_this_alert))
             .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
@@ -105,7 +105,14 @@ class AlertActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .create()
-            .show()
+
+        dialog.setOnShowListener {
+            val buttonOk = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            buttonOk.setTextColor(resources.getColor(R.color.delete_color, null))
+            buttonCancel.setTextColor(resources.getColor(R.color.buttons_, null))
+        }
+        dialog.show()
     }
 
 

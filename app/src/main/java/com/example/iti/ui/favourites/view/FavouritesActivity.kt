@@ -106,7 +106,7 @@ class FavouritesActivity : AppCompatActivity() {
     }
 
     private fun showDeleteConfirmationDialog(weatherEntity: WeatherEntity, position: Int) {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.delete_location))
             .setMessage(getString(R.string.are_you_sure_you_want_to_delete_this_location))
             .setPositiveButton(R.string.yes) { dialog, _ ->
@@ -118,7 +118,15 @@ class FavouritesActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .create()
-            .show()
+
+        dialog.setOnShowListener {
+            val buttonOk = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+            buttonOk.setTextColor(resources.getColor(R.color.delete_color, null))
+            buttonCancel.setTextColor(resources.getColor(R.color.buttons_, null))
+        }
+        dialog.show()
     }
 
     private fun setUpObservers() {
