@@ -1,5 +1,7 @@
 package com.example.iti.db.remote
 
+import android.util.Log
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSource
 import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
@@ -8,11 +10,15 @@ import com.example.iti.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RemoteDataSourceImpl(private val apiService: ApiServices) : RemoteDataSource {
-
+class RemoteDataSourceImpl(
+    private val apiService: ApiServices,
+    private val sharedPrefsDataSource: SharedPrefsDataSource
+) : RemoteDataSource {
 
     override fun fetchCurrentWeather(lat: Double, lon: Double): Flow<Weather> = flow {
-        val response = apiService.getWeather(lat, lon, Constants.API_KEY, Constants.UNITS)
+        val lang = sharedPrefsDataSource.getString("Language", "en")
+        val response = apiService.getWeather(lat, lon, Constants.API_KEY, Constants.UNITS, lang)
+        Log.e("A&A", "fetchCurrentWeather: $lang")
         if (response.isSuccessful && response.body() != null) {
             emit(response.body()!!)
         } else {
@@ -21,7 +27,9 @@ class RemoteDataSourceImpl(private val apiService: ApiServices) : RemoteDataSour
     }
 
     override fun fetchHourlyForecast(lat: Double, lon: Double): Flow<Hourly> = flow {
-        val response = apiService.getHourlyForecast(lat, lon, Constants.API_KEY, Constants.UNITS)
+        val lang = sharedPrefsDataSource.getString("Language", "en")
+        val response =
+            apiService.getHourlyForecast(lat, lon, Constants.API_KEY, Constants.UNITS, lang)
         if (response.isSuccessful && response.body() != null) {
             emit(response.body()!!)
         } else {
@@ -30,7 +38,9 @@ class RemoteDataSourceImpl(private val apiService: ApiServices) : RemoteDataSour
     }
 
     override fun fetchDailyForecast(lat: Double, lon: Double): Flow<DailyForecast> = flow {
-        val response = apiService.getDailyForecast(lat, lon, Constants.API_KEY, Constants.UNITS)
+        val lang = sharedPrefsDataSource.getString("Language", "en")
+        val response =
+            apiService.getDailyForecast(lat, lon, Constants.API_KEY, Constants.UNITS, lang)
         if (response.isSuccessful && response.body() != null) {
             emit(response.body()!!)
         } else {

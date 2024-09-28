@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -58,8 +59,8 @@ class DailyAdapter(
                 // Check if the date is today
                 val today = LocalDate.now()
                 val dayString = when (date) {
-                    today -> "Today"
-                    today.plusDays(1) -> "Tomorrow"
+                    today -> getString(itemView.context, R.string.today)
+                    today.plusDays(1) -> getString(itemView.context, R.string.tomorrow)
                     else -> date.format(
                         DateTimeFormatter.ofPattern(
                             "EEEE",

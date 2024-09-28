@@ -20,6 +20,9 @@ interface Repository {
     fun getLocation(): Pair<Float, Float>?
     fun getNotificationPreference(): Boolean
     fun setNotificationPreference(enabled: Boolean)
+    fun getLanguage(): String
+    fun setLanguage(language: String)
+
 
 
 

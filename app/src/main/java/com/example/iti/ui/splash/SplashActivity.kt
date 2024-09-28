@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.iti.R
 import com.example.iti.databinding.ActivitySplashBinding
 import com.example.iti.pushNotifications.Permission
 import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
@@ -81,7 +82,7 @@ class SplashActivity : AppCompatActivity() {
             shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 Toast.makeText(
                     this,
-                    "Location permission is required to access home screen features.",
+                    getString(R.string.location_permission_is_required_to_access_home_screen_features),
                     Toast.LENGTH_LONG
                 ).show()
                 requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -118,7 +119,7 @@ class SplashActivity : AppCompatActivity() {
             // Show message if location is not stored
             Toast.makeText(
                 this,
-                "No location saved. Please enable location services.",
+                getString(R.string.no_location_saved_please_enable_location_services),
                 Toast.LENGTH_LONG
             ).show()
             showEnableLocationDialog()
@@ -127,13 +128,21 @@ class SplashActivity : AppCompatActivity() {
 
     // Show AlertDialog to ask if the user wants to enable location services
     private fun showEnableLocationDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("Enable Location Services")
-            .setMessage("Location services are required to access the home screen. Do you want to enable them?")
-            .setPositiveButton("Yes") { _, _ -> promptEnableLocationServices() }
-            .setNegativeButton("Choose From Maps") { _, _ -> navigateToGoogleMaps() }
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.enable_location_services))
+            .setMessage(getString(R.string.location_services_are_required_to_access_the_home_screen_do_you_want_to_enable_them))
+            .setPositiveButton(getString(R.string.yes)) { _, _ -> promptEnableLocationServices() }
+            .setNegativeButton(getString(R.string.choose_from_maps)) { _, _ -> navigateToGoogleMaps() }
             .setCancelable(false)
-            .show()
+            .create()
+
+        dialog.setOnShowListener {
+            val buttonOk = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            val buttonCancel = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            buttonOk.setTextColor(resources.getColor(R.color.buttons_, null))
+            buttonCancel.setTextColor(resources.getColor(R.color.buttons_, null))
+        }
+        dialog.show()
     }
 
     // Prompt user to enable location services by navigating to settings

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import com.example.iti.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -27,11 +28,11 @@ object Helpers {
         }
     }
 
-    fun getWindSpeedUnitSymbol(unit: String): String {
+    fun getWindSpeedUnitSymbol(unit: String): Int {
         return when (unit) {
-            "Meter/Second" -> "m/s"
-            "Miles/Hour" -> "mph"
-            else -> "m/s"
+            "Meter/Second" -> R.string.m_s
+            "Miles/Hour" -> R.string.mph
+            else -> R.string.m_s
         }
     }
 

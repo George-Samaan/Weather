@@ -59,6 +59,13 @@ class RepositoryImpl(
     override fun setNotificationPreference(enabled: Boolean) {
         return sharedPrefsDataSource.setNotificationPreference(enabled)
     }
+    override fun getLanguage(): String {
+        return sharedPrefsDataSource.getString("Language", "en") // Default to English
+    }
+
+    override fun setLanguage(language: String) {
+        sharedPrefsDataSource.putString("Language", language)
+    }
 
 
     //Local DataSource

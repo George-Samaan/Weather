@@ -23,7 +23,7 @@
         android:layout_margin="8dp"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_corners_background"
-        android:hint="Search for a place"
+        android:hint="@string/search_for_a_place"
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:padding="16dp"

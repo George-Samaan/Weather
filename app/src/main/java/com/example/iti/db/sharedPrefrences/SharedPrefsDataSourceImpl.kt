@@ -45,4 +45,12 @@ class SharedPrefsDataSourceImpl(private val sharedPreferences: SharedPreferences
     override fun setNotificationPreference(enabled: Boolean) {
         return sharedPreferences.edit().putBoolean("notifications_enabled", enabled).apply()
     }
+
+    override fun getString(key: String, defaultValue: String): String {
+        return sharedPreferences.getString(key, defaultValue) ?: defaultValue
+    }
+
+    override fun putString(key: String, value: String) {
+        sharedPreferences.edit().putString(key, value).apply()
+    }
 }

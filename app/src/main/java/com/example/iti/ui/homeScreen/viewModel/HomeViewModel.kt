@@ -1,5 +1,6 @@
 package com.example.iti.ui.homeScreen.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.iti.db.repository.RepositoryImpl
@@ -50,6 +51,7 @@ class HomeViewModel(private val repository: RepositoryImpl) : ViewModel() {
             repository.fetchDailyForecast(lat, lon).catch {
                 _dailyForecastDataStateFlow.value = ApiState.Failure(it.message ?: "Unknown Error")
             }.collect { dailyForecast ->
+                Log.e("HomeViewModel", "Daily Forecast: $dailyForecast")
                 val processedForecast = processForecastData(dailyForecast.list)
                 _dailyForecastDataStateFlow.value = ApiState.Success(processedForecast)
             }

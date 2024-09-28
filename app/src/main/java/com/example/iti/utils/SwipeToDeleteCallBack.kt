@@ -44,10 +44,10 @@ class SwipeToDeleteCallback(
     ) {
         val itemView = viewHolder.itemView
         val itemHeight = itemView.bottom - itemView.top
-        val cardMarginHorizontal = 16 // Match the margin of your CardView
+        val cardMarginHorizontal = 16
         val paddingVertical = 50
 
-        // Load icon dynamically based on the passed resource
+        // Load icon
         deleteIcon = ContextCompat.getDrawable(recyclerView.context, iconResId)!!
         intrinsicWidth = deleteIcon.intrinsicWidth
         intrinsicHeight = deleteIcon.intrinsicHeight
