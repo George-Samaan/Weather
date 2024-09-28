@@ -7,6 +7,7 @@ import com.example.iti.model.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
+    //remote methods
     fun fetchCurrentWeather(lat: Double, long: Double): Flow<Weather>
     fun fetchHourlyForecast(lat: Double, lon: Double): Flow<Hourly>
     fun fetchDailyForecast(lat: Double, lon: Double): Flow<DailyForecast>
@@ -22,9 +23,6 @@ interface Repository {
     fun setNotificationPreference(enabled: Boolean)
     fun getLanguage(): String
     fun setLanguage(language: String)
-
-
-
 
     //local database
     suspend fun insertWeather(weather: WeatherEntity)
