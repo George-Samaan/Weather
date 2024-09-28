@@ -4,6 +4,7 @@ import android.R
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -76,6 +77,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkRunningLanguage()
         binding = ActivityHomeScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpViews()
@@ -99,7 +101,11 @@ class HomeScreenActivity : AppCompatActivity() {
             if (isNetworkAvailable(this)) {
                 startActivity(Intent(this, GoogleMapsActivity::class.java))
             } else {
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(com.example.iti.R.string.no_internet_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         binding.btnSettings.setOnClickListener {
@@ -125,6 +131,7 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun gettingPassedKeysFromIntents() {
         passedLat = intent.getDoubleExtra("latitude", 0.0)
+        Log.d("mahmoud", "passed lat : ${passedLat}")
         passedLong = intent.getDoubleExtra("longitude", 0.0)
         isViewOnly = intent.getBooleanExtra("viewOnly", false)
         cityName = intent.getStringExtra("CITY_KEY")
@@ -141,10 +148,18 @@ class HomeScreenActivity : AppCompatActivity() {
             val adminArea = address.adminArea?.takeIf { it.isNotBlank() } ?: ""
             val countryName = address.countryName?.takeIf { it.isNotBlank() } ?: ""
 
-            // Format the city string, omitting null or blank values
-            city = listOf(adminArea, countryName)
-                .filter { it.isNotEmpty() }
-                .joinToString(", ")
+            // Get the language setting from SharedPreferences
+            val language = settingsViewModel.getLanguage()
+
+            // Determine the city name based on the language
+            city = if (language == "ar") { // Check if the language is Arabic
+                countryName // Only use the country name
+            } else {
+                // Format the city string, including admin area and country name
+                listOf(adminArea, countryName)
+                    .filter { it.isNotEmpty() }
+                    .joinToString(", ")
+            }
 
             if (city.isNotEmpty()) {
                 Log.e("HomeScreenActivity", "City: $city")
@@ -161,7 +176,7 @@ class HomeScreenActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Toast.makeText(
                     this@HomeScreenActivity,
-                    "No network. Using saved data.",
+                    getString(com.example.iti.R.string.no_network_using_saved_data),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -169,6 +184,7 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setUpCollector() {
+        Log.d("x", " xxxx")
         gettingWeatherDataFromViewModel()
         gettingHourlyWeatherDataFromViewModel()
         gettingDailyWeatherDataFromViewModel()
@@ -230,6 +246,7 @@ class HomeScreenActivity : AppCompatActivity() {
             val gson = Gson()
             val weatherData: Weather = gson.fromJson(weatherJson, Weather::class.java)
             updateUi(weatherData) // Update UI with the saved weather data
+            Log.d("mahmoud", "Weather data loaded from SharedPreferences ${weatherData}")
         } else {
             // Handle case when no data is saved
             Log.e("WeatherError", "No weather data available in SharedPreferences.")
@@ -242,7 +259,7 @@ class HomeScreenActivity : AppCompatActivity() {
         val windSpeedUnit = settingsViewModel.getWindSpeedUnit()
 
         //set Lottie based on weather
-        val lottieAnimation = checkWeatherDescription(weather)
+        val lottieAnimation = checkWeatherDescription(this, weather)
         binding.animWeather.setAnimation(lottieAnimation)
         binding.animWeather.playAnimation()
 
@@ -269,14 +286,15 @@ class HomeScreenActivity : AppCompatActivity() {
             .split(" ")
             .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
         binding.tvDate.text = date()
-        binding.tvPressureValue.text = "${weather.main.pressure} hpa"
+        binding.tvPressureValue.text =
+            getString(com.example.iti.R.string.hpa, weather.main.pressure)
         binding.tvHumidityValue.text = "${weather.main.humidity} %"
         val windSpeed = convertWindSpeed(weather.wind.speed, "Meter/Second", windSpeedUnit)
         binding.tvWindValue.text = String.format(
             Locale.getDefault(),
             "%.0f %s",
             windSpeed,
-            getWindSpeedUnitSymbol(windSpeedUnit)
+            getString(getWindSpeedUnitSymbol(windSpeedUnit))
         )
 
         // additional info
@@ -332,7 +350,7 @@ class HomeScreenActivity : AppCompatActivity() {
                 favouritesViewModel.insertWeatherData(weatherEntity)
                 Toast.makeText(
                     this@HomeScreenActivity,
-                    "Location saved successfully",
+                    getString(com.example.iti.R.string.location_saved_successfully),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -438,6 +456,7 @@ class HomeScreenActivity : AppCompatActivity() {
             )
             binding.swipeToRefresh.isRefreshing = false
         }
+        Log.e("HomeScreenActivity", "Loaded data from database")
     }
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
@@ -467,7 +486,7 @@ class HomeScreenActivity : AppCompatActivity() {
             Locale.getDefault(),
             "%.0f %s",
             windSpeed,
-            getWindSpeedUnitSymbol(windSpeedUnit)
+            getString(getWindSpeedUnitSymbol(windSpeedUnit))
         )
 
         // Additional weather info
@@ -498,6 +517,12 @@ class HomeScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        /*val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
+        val passedLat = sharedPreferences.getFloat("latitude", Float.MIN_VALUE).toDouble()
+        val passedLong = sharedPreferences.getFloat("longitude", Float.MIN_VALUE).toDouble()
+        Log.d("mahmoud","passed lat  Resume: $passedLat")
+        Log.d("mahmoud","passed long  Resume: $passedLong")
+        setCityNameBasedOnLatAndLong(passedLat,passedLong)*/
         fetchDataBasedOnLatAndLong()
         setUpAdapters()
         if (!isNetworkAvailable(this)) {
@@ -506,7 +531,15 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun getRepository() = RepositoryImpl(
-        remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+        remoteDataSource = RemoteDataSourceImpl(
+            apiService = ApiClient.retrofit,
+            sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                this.getSharedPreferences(
+                    "AppSettingPrefs",
+                    MODE_PRIVATE
+                )
+            )
+        ),
         sharedPrefsDataSource = SharedPrefsDataSourceImpl(
             this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
         ),
@@ -553,9 +586,22 @@ class HomeScreenActivity : AppCompatActivity() {
     private fun showSnackBar() {
         val snackBar = Snackbar.make(
             findViewById(R.id.content),
-            "No network connection. Data loaded from cache.",
+            getString(com.example.iti.R.string.no_network_connection_data_loaded_from_cache),
             Snackbar.LENGTH_LONG
         )
         snackBar.show()
+    }
+
+    private fun checkRunningLanguage() {
+        val language = settingsViewModel.getLanguage()
+        val locale = Locale(language)
+        Log.e("lang", "curren lang $language")
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.setLocale(locale)
+        applicationContext.createConfigurationContext(config)
+        applicationContext.resources.updateConfiguration(config, resources.displayMetrics)
+        createConfigurationContext(config)
+        resources.updateConfiguration(config, resources.displayMetrics)
     }
 }

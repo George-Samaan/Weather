@@ -11,6 +11,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.iti.R
 import com.example.iti.db.remote.RemoteDataSourceImpl
+import com.example.iti.db.sharedPrefrences.SharedPrefsDataSourceImpl
 import com.example.iti.network.ApiClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +29,12 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
         return withContext(Dispatchers.IO) {
             try {
                 val weatherRepository =
-                    RemoteDataSourceImpl(apiService = ApiClient.retrofit)
+                    RemoteDataSourceImpl(
+                        apiService = ApiClient.retrofit,
+                        sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                            context.getSharedPreferences("AppSettingPrefs", Context.MODE_PRIVATE)
+                        )
+                    )
 
                 // Collecting the Flow from the repository
                 weatherRepository.fetchCurrentWeather(lat, lon).collect { weatherData ->

@@ -36,7 +36,15 @@ class GoogleMapsActivity : AppCompatActivity() {
     private val mapsViewModel: MapsViewModel by viewModels {
         MapsViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+                remoteDataSource = RemoteDataSourceImpl(
+                    apiService = ApiClient.retrofit,
+                    sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                        this.getSharedPreferences(
+                            "AppSettingPrefs",
+                            MODE_PRIVATE
+                        )
+                    )
+                ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                     this.getSharedPreferences("homeScreen", MODE_PRIVATE)
                 ),
@@ -44,7 +52,7 @@ class GoogleMapsActivity : AppCompatActivity() {
             )
         )
     }
-    private var lastMarker: Marker? = null // Add a variable to store the last marker
+    private var lastMarker: Marker? = null
     private var map: GoogleMap? = null
     private lateinit var binding: ActivityGoogleMapsBinding
 
@@ -102,7 +110,8 @@ class GoogleMapsActivity : AppCompatActivity() {
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error, e.message), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -112,16 +121,18 @@ class GoogleMapsActivity : AppCompatActivity() {
         try {
             val addresses = geocoder.getFromLocationName(query, 5)
             if (!addresses.isNullOrEmpty()) {
-                val results = addresses.map { it.getAddressLine(0) ?: "No Address Found" }
+                val results =
+                    addresses.map { it.getAddressLine(0) ?: getString(R.string.no_address_found) }
                 adapter.clear()
                 adapter.addAll(results)
                 adapter.notifyDataSetChanged()
             } else {
-                Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_results_found), Toast.LENGTH_SHORT)
+                    .show()
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.error, e.message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -135,13 +146,12 @@ class GoogleMapsActivity : AppCompatActivity() {
 
         // Use Geocoder to get the address details
         val geocoder = Geocoder(this, Locale.ENGLISH)
-        var addressText = "Address not found"
+        var addressText = getString(R.string.no_address_found)
         try {
             val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 5)
             if (addresses!!.isNotEmpty()) {
                 val address = addresses[0]
-                // Construct the address text (you can customize this as needed)
-                addressText = address.getAddressLine(0) ?: "Address not found"
+                addressText = address.getAddressLine(0) ?: getString(R.string.no_address_found)
             }
         } catch (e: IOException) {
             e.printStackTrace()

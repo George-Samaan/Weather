@@ -26,4 +26,12 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
     fun setNotificationPreference(enabled: Boolean) {
         repository.setNotificationPreference(enabled)
     }
+
+    fun getLanguage(): String {
+        return repository.getLanguage()
+    }
+
+    fun setLanguage(language: String) {
+        repository.setLanguage(language)
+    }
 }

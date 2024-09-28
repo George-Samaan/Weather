@@ -8,11 +8,12 @@ import retrofit2.http.Query
 
 interface ApiServices {
     @GET("weather")
-    suspend fun getWeather(  //bt serve 3alia wa't m7tagha
+    suspend fun getWeather(
         @Query("lat") lat: Double,
         @Query("lon") long: Double,
         @Query("appid") appid: String,
-        @Query("units") units: String
+        @Query("units") units: String,
+        @Query("lang") lang: String
     ): retrofit2.Response<Weather>
 
     @GET("forecast")
@@ -20,7 +21,8 @@ interface ApiServices {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") appid: String,
-        @Query("units") units: String
+        @Query("units") units: String,
+        @Query("lang") lang: String
     ): retrofit2.Response<Hourly>
 
     @GET("forecast")
@@ -28,6 +30,7 @@ interface ApiServices {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") appid: String,
-        @Query("units") units: String
+        @Query("units") units: String,
+        @Query("lang") lang: String
     ): retrofit2.Response<DailyForecast>
 }

@@ -35,7 +35,15 @@ class FavouritesActivity : AppCompatActivity() {
     private val favouritesViewModel: FavouritesViewModel by viewModels {
         FavouritesViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+                remoteDataSource = RemoteDataSourceImpl(
+                    apiService = ApiClient.retrofit,
+                    sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                        this.getSharedPreferences(
+                            "AppSettingPrefs",
+                            MODE_PRIVATE
+                        )
+                    )
+                ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 ),
@@ -48,7 +56,15 @@ class FavouritesActivity : AppCompatActivity() {
     private val settingsViewModel: SettingsViewModel by viewModels {
         SettingsViewModelFactory(
             RepositoryImpl(
-                remoteDataSource = RemoteDataSourceImpl(apiService = ApiClient.retrofit),
+                remoteDataSource = RemoteDataSourceImpl(
+                    apiService = ApiClient.retrofit,
+                    sharedPrefsDataSource = SharedPrefsDataSourceImpl(
+                        this.getSharedPreferences(
+                            "AppSettingPrefs",
+                            MODE_PRIVATE
+                        )
+                    )
+                ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                     this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
                 ),
@@ -91,13 +107,13 @@ class FavouritesActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmationDialog(weatherEntity: WeatherEntity, position: Int) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Location")
-            .setMessage("Are you sure you want to delete this location?")
-            .setPositiveButton("Yes") { dialog, _ ->
+            .setTitle(getString(R.string.delete_location))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_delete_this_location))
+            .setPositiveButton(R.string.yes) { dialog, _ ->
                 favouritesViewModel.deleteWeatherData(weatherEntity)
                 dialog.dismiss()
             }
-            .setNegativeButton("No") { dialog, _ ->
+            .setNegativeButton(R.string.no) { dialog, _ ->
                 favouritesAdapter.notifyItemChanged(position)
                 dialog.dismiss()
             }
@@ -130,7 +146,8 @@ class FavouritesActivity : AppCompatActivity() {
             if (isNetworkAvailable(this)) {
                 startActivity(Intent(this, GoogleMapsActivity::class.java))
             } else {
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }

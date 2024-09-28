@@ -94,13 +94,13 @@ class AlertActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmationDialog(alarm: AlarmEntity, position: Int) {
         AlertDialog.Builder(this)
-            .setTitle("Delete Alert")
-            .setMessage("Are you sure you want to delete this alert?")
-            .setPositiveButton("Yes") { dialog, _ ->
+            .setTitle(getString(R.string.delete_alert))
+            .setMessage(getString(R.string.are_you_sure_you_want_to_delete_this_alert))
+            .setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                 alarmViewModel.deleteAlarm(alarm)
                 dialog.dismiss()
             }
-            .setNegativeButton("No") { dialog, _ ->
+            .setNegativeButton(getString(R.string.no)) { dialog, _ ->
                 alarmAdapter.notifyItemChanged(position) // Revert swipe if the user cancels
                 dialog.dismiss()
             }
@@ -169,7 +169,7 @@ class AlertActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "Overlay permission is required to display the alarm screen.",
+                        getString(R.string.overlay_permission_is_required_to_display_the_alarm_screen),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -182,7 +182,7 @@ class AlertActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(
                         this,
-                        "Exact alarm permission is required to set alarms.",
+                        getString(R.string.exact_alarm_permission_is_required_to_set_alarms),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -209,7 +209,7 @@ class AlertActivity : AppCompatActivity() {
 
     private fun setAlarm(timeInMillis: Long) {
         alarmViewModel.setAlarm(timeInMillis)
-        Toast.makeText(this, "Alarm set!", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.alarm_set), Toast.LENGTH_SHORT).show()
         alarmViewModel.loadAlarms()
     }
 
