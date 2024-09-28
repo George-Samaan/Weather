@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.iti.R
+import com.example.iti.utils.Constants.ALARM_CHANNEL_ID
 
 class AlarmReceiver : BroadcastReceiver() {
     @SuppressLint("LaunchActivityFromNotification")
@@ -23,7 +24,7 @@ class AlarmReceiver : BroadcastReceiver() {
 
     private fun createNotification(context: Context) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                val channelId = "ALARM_CHANNEL"
+                val channelId = ALARM_CHANNEL_ID
                 val channel = NotificationChannel(
                     channelId,
                     "Alarm Channel",
@@ -44,12 +45,16 @@ class AlarmReceiver : BroadcastReceiver() {
              PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
          )
 
-         val notification = NotificationCompat.Builder(context, "ALARM_CHANNEL")
+        val notification = NotificationCompat.Builder(context, ALARM_CHANNEL_ID)
              .setSmallIcon(R.drawable.app_logo)
              .setContentText(context.getString(R.string.don_t_forget_to_check_the_weather))
              .setPriority(NotificationCompat.PRIORITY_HIGH)
              .setOngoing(true)
-             .addAction(R.drawable.ic_notification, "Dismiss", pendingIntent)
+            .addAction(
+                R.drawable.ic_notification,
+                context.getString(R.string.dismiss),
+                pendingIntent
+            )
              .setSound(null)
              .build()
 

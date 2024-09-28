@@ -12,6 +12,7 @@ import com.example.iti.R
 import com.example.iti.databinding.ItemFavouriteBinding
 import com.example.iti.model.WeatherEntity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
+import com.example.iti.utils.Constants.TEMPERATURE_FORMAT
 import com.example.iti.utils.Helpers.convertTemperature
 import com.example.iti.utils.Helpers.getUnitSymbol
 import kotlinx.coroutines.CoroutineScope
@@ -67,7 +68,7 @@ class FavouritesAdapter(
 
                 // Ensure both arguments are passed to format string
                 binding.tvTempunitValue.text = String.format(
-                    "%.0f°%s",
+                    TEMPERATURE_FORMAT,
                     convertTemperature(weatherEntity.currentTemp, unit),
                     getUnitSymbol(unit)
                 )

@@ -7,6 +7,8 @@ import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
 import com.example.iti.model.WeatherEntity
+import com.example.iti.utils.Constants.ENGLISH_SHARED
+import com.example.iti.utils.Constants.LANGUAGE_SHARED
 import kotlinx.coroutines.flow.Flow
 
 class RepositoryImpl(
@@ -60,11 +62,11 @@ class RepositoryImpl(
         return sharedPrefsDataSource.setNotificationPreference(enabled)
     }
     override fun getLanguage(): String {
-        return sharedPrefsDataSource.getString("Language", "en") // Default to English
+        return sharedPrefsDataSource.getString(LANGUAGE_SHARED, ENGLISH_SHARED)
     }
 
     override fun setLanguage(language: String) {
-        sharedPrefsDataSource.putString("Language", language)
+        sharedPrefsDataSource.putString(LANGUAGE_SHARED, language)
     }
 
 

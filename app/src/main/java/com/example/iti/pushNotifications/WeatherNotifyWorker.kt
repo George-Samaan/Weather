@@ -13,6 +13,9 @@ import com.example.iti.R
 import com.example.iti.db.remote.RemoteDataSourceImpl
 import com.example.iti.db.sharedPrefrences.SharedPrefsDataSourceImpl
 import com.example.iti.network.ApiClient
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
+import com.example.iti.utils.Constants.SHARED_PREFS_NAME
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -23,8 +26,8 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
     CoroutineWorker(context, workerParams) {
 
     override suspend fun doWork(): Result {
-        val lat = inputData.getDouble("latitude", 0.0)
-        val lon = inputData.getDouble("longitude", 0.0)
+        val lat = inputData.getDouble(LATITUDE_SHARED, 0.0)
+        val lon = inputData.getDouble(LONGITUDE_SHARED, 0.0)
 
         return withContext(Dispatchers.IO) {
             try {
@@ -32,7 +35,7 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
                     RemoteDataSourceImpl(
                         apiService = ApiClient.retrofit,
                         sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-                            context.getSharedPreferences("AppSettingPrefs", Context.MODE_PRIVATE)
+                            context.getSharedPreferences(SHARED_PREFS_NAME, Context.MODE_PRIVATE)
                         )
                     )
 
@@ -41,20 +44,29 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
                     val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
                     when (currentTime) {
                         "08:00" -> showNotification(
-                            "Good Morning.",
-                            "Current Temperature: ${weatherData.main.temp}°C",
+                            context.getString(R.string.good_morning),
+                            context.getString(
+                                R.string.current_temperature_c,
+                                weatherData.main.temp
+                            ),
                             R.drawable.ic_clear_sky
                         )
 
                         "16:00" -> showNotification(
-                            "Good Afternoon.",
-                            "Current Temperature: ${weatherData.main.temp}°C",
+                            context.getString(R.string.good_afternoon),
+                            context.getString(
+                                R.string.current_temperature_c,
+                                weatherData.main.temp
+                            ),
                             R.drawable.ic_few_cloud
                         )
 
                         "22:00" -> showNotification(
-                            "Good Evening.",
-                            "Current Temperature: ${weatherData.main.temp}°C",
+                            context.getString(R.string.good_evening),
+                            context.getString(
+                                R.string.current_temperature_c,
+                                weatherData.main.temp
+                            ),
                             R.drawable.ic_night_hour
                         )
 

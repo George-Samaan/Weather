@@ -22,6 +22,14 @@ import com.example.iti.network.ApiClient
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
 import com.example.iti.ui.splash.SplashActivity
+import com.example.iti.utils.Constants.ARABIC_SHARED
+import com.example.iti.utils.Constants.CELSIUS_SHARED
+import com.example.iti.utils.Constants.ENGLISH_SHARED
+import com.example.iti.utils.Constants.FAHRENHEIT_SHARED
+import com.example.iti.utils.Constants.KELVIN_SHARED
+import com.example.iti.utils.Constants.METER_PER_SECOND
+import com.example.iti.utils.Constants.MILES_PER_HOUR
+import com.example.iti.utils.Constants.SHARED_PREFS_NAME
 import java.util.Locale
 
 class SettingsActivity : AppCompatActivity() {
@@ -33,13 +41,13 @@ class SettingsActivity : AppCompatActivity() {
                     apiService = ApiClient.retrofit,
                     sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                         this.getSharedPreferences(
-                            "AppSettingPrefs",
+                            SHARED_PREFS_NAME,
                             MODE_PRIVATE
                         )
                     )
                 ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-                    this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
+                    this.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
@@ -58,15 +66,15 @@ class SettingsActivity : AppCompatActivity() {
 
         val savedUnit = settingsViewModel.getTemperatureUnit()
         when (savedUnit) {
-            "Celsius" -> binding.radioCelsius.isChecked = true
-            "Fahrenheit" -> binding.radioFahrenheit.isChecked = true
-            "Kelvin" -> binding.radioKelvin.isChecked = true
+            CELSIUS_SHARED -> binding.radioCelsius.isChecked = true
+            FAHRENHEIT_SHARED -> binding.radioFahrenheit.isChecked = true
+            KELVIN_SHARED -> binding.radioKelvin.isChecked = true
         }
 
         val savedSpeedUnit = settingsViewModel.getWindSpeedUnit()
         when (savedSpeedUnit) {
-            "Meter/Second" -> binding.radioMeterPerSecond.isChecked = true
-            "Miles/Hour" -> binding.radioMilesPerHour.isChecked = true
+            METER_PER_SECOND -> binding.radioMeterPerSecond.isChecked = true
+            MILES_PER_HOUR -> binding.radioMilesPerHour.isChecked = true
         }
 
         onTurnOnNotificationsClick()
@@ -82,15 +90,15 @@ class SettingsActivity : AppCompatActivity() {
     private fun setLanguageSelection() {
         val savedLanguage = settingsViewModel.getLanguage()
         when (savedLanguage) {
-            "en" -> binding.radioEnglish.isChecked = true
-            "ar" -> binding.radioArabic.isChecked = true
+            ENGLISH_SHARED -> binding.radioEnglish.isChecked = true
+            ARABIC_SHARED -> binding.radioArabic.isChecked = true
         }
 
         binding.radioEnglish.setOnClickListener {
-            showLanguageChangeDialog("en")
+            showLanguageChangeDialog(ENGLISH_SHARED)
         }
         binding.radioArabic.setOnClickListener {
-            showLanguageChangeDialog("ar")
+            showLanguageChangeDialog(ARABIC_SHARED)
         }
     }
 
@@ -188,23 +196,23 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun onWindSpeedUnitSelection() {
         binding.radioMeterPerSecond.setOnClickListener {
-            settingsViewModel.setWindSpeedUnit("Meter/Second")
+            settingsViewModel.setWindSpeedUnit(METER_PER_SECOND)
         }
         binding.radioMilesPerHour.setOnClickListener {
-            settingsViewModel.setWindSpeedUnit("Miles/Hour")
+            settingsViewModel.setWindSpeedUnit(MILES_PER_HOUR)
         }
     }
 
 
     private fun onTemperatureUnitSelection() {
         binding.radioKelvin.setOnClickListener {
-            settingsViewModel.setTemperatureUnit("Kelvin")
+            settingsViewModel.setTemperatureUnit(KELVIN_SHARED)
         }
         binding.radioCelsius.setOnClickListener {
-            settingsViewModel.setTemperatureUnit("Celsius")
+            settingsViewModel.setTemperatureUnit(CELSIUS_SHARED)
         }
         binding.radioFahrenheit.setOnClickListener {
-            settingsViewModel.setTemperatureUnit("Fahrenheit")
+            settingsViewModel.setTemperatureUnit(FAHRENHEIT_SHARED)
         }
     }
 

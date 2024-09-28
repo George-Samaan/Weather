@@ -27,6 +27,8 @@ import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
+import com.example.iti.utils.Constants.FAVOURITE_SHARED_CITY
+import com.example.iti.utils.Constants.SHARED_PREFS_NAME
 import com.example.iti.utils.Helpers.isNetworkAvailable
 import kotlinx.coroutines.launch
 
@@ -39,13 +41,13 @@ class FavouritesActivity : AppCompatActivity() {
                     apiService = ApiClient.retrofit,
                     sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                         this.getSharedPreferences(
-                            "AppSettingPrefs",
+                            SHARED_PREFS_NAME,
                             MODE_PRIVATE
                         )
                     )
                 ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-                    this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
+                    this.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
@@ -60,13 +62,13 @@ class FavouritesActivity : AppCompatActivity() {
                     apiService = ApiClient.retrofit,
                     sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                         this.getSharedPreferences(
-                            "AppSettingPrefs",
+                            SHARED_PREFS_NAME,
                             MODE_PRIVATE
                         )
                     )
                 ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-                    this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
+                    this.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
@@ -85,7 +87,7 @@ class FavouritesActivity : AppCompatActivity() {
     private fun setUpRecyclerViews() {
         favouritesAdapter = FavouritesAdapter(settingsViewModel, lifecycleScope) { cityName ->
             val intent = Intent(this, HomeScreenActivity::class.java)
-            intent.putExtra("CITY_KEY", cityName)
+            intent.putExtra(FAVOURITE_SHARED_CITY, cityName)
             startActivity(intent)
         }
 

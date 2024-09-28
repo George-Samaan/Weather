@@ -22,6 +22,10 @@ import com.example.iti.network.ApiClient
 import com.example.iti.ui.googleMaps.viewModel.MapsViewModel
 import com.example.iti.ui.googleMaps.viewModel.MapsViewModelFactory
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
+import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
+import com.example.iti.utils.Constants.SHARED_PREFS_NAME
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.SupportMapFragment
@@ -40,13 +44,13 @@ class GoogleMapsActivity : AppCompatActivity() {
                     apiService = ApiClient.retrofit,
                     sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                         this.getSharedPreferences(
-                            "AppSettingPrefs",
+                            SHARED_PREFS_NAME,
                             MODE_PRIVATE
                         )
                     )
                 ),
                 sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-                    this.getSharedPreferences("homeScreen", MODE_PRIVATE)
+                    this.getSharedPreferences(HOME_SCREEN_SHARED_PREFS_NAME, MODE_PRIVATE)
                 ),
                 localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
             )
@@ -175,8 +179,8 @@ class GoogleMapsActivity : AppCompatActivity() {
             mapsViewModel.saveLocation(latLng.latitude.toFloat(), latLng.longitude.toFloat())
 
             val intent = Intent(this, HomeScreenActivity::class.java)
-            intent.putExtra("latitude", latLng.latitude)
-            intent.putExtra("longitude", latLng.longitude)
+            intent.putExtra(LATITUDE_SHARED, latLng.latitude)
+            intent.putExtra(LONGITUDE_SHARED, latLng.longitude)
             intent.putExtra("HOMESCREEN", false)
             bottomSheetDialog.dismiss()
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -185,8 +189,8 @@ class GoogleMapsActivity : AppCompatActivity() {
         }
         bottomSheetBinding.viewButton.setOnClickListener {
             val intent = Intent(this, HomeScreenActivity::class.java)
-            intent.putExtra("latitude", latLng.latitude)
-            intent.putExtra("longitude", latLng.longitude)
+            intent.putExtra(LATITUDE_SHARED, latLng.latitude)
+            intent.putExtra(LONGITUDE_SHARED, latLng.longitude)
             intent.putExtra("viewOnly", true)
             startActivity(intent)
             finish()

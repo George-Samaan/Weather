@@ -8,6 +8,8 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
@@ -16,8 +18,8 @@ object NotificationServices {
         val workManager = WorkManager.getInstance(context)
 
         val inputData = Data.Builder()
-            .putDouble("latitude", lat)
-            .putDouble("longitude", lon)
+            .putDouble(LATITUDE_SHARED, lat)
+            .putDouble(LONGITUDE_SHARED, lon)
             .build()
 
         val morningRequest = createWorkRequest("08:00", inputData)

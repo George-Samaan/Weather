@@ -1,36 +1,44 @@
 package com.example.iti.db.sharedPrefrences
 
 import android.content.SharedPreferences
+import com.example.iti.utils.Constants
+import com.example.iti.utils.Constants.CELSIUS_SHARED
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
+import com.example.iti.utils.Constants.NOTIFICATION_SHARED
+import com.example.iti.utils.Constants.TEMP_UNIT_SHARED
+import com.example.iti.utils.Constants.WIND_SPEED_UNIT_SHARED
 
 class SharedPrefsDataSourceImpl(private val sharedPreferences: SharedPreferences) :
     SharedPrefsDataSource {
     override fun getTemperatureUnit(): String {
-        return sharedPreferences.getString("TempUnit", "Celsius") ?: "Celsius"
+        return sharedPreferences.getString(TEMP_UNIT_SHARED, CELSIUS_SHARED) ?: CELSIUS_SHARED
     }
 
     override fun setTemperatureUnit(unit: String) {
-        sharedPreferences.edit().putString("TempUnit", unit).apply()
+        sharedPreferences.edit().putString(TEMP_UNIT_SHARED, unit).apply()
     }
 
     override fun getWindSpeedUnit(): String {
-        return sharedPreferences.getString("wind_speed_unit", "Meter/Second") ?: "Meter/Second"
+        return sharedPreferences.getString(WIND_SPEED_UNIT_SHARED, Constants.METER_PER_SECOND)
+            ?: Constants.METER_PER_SECOND
     }
 
     override fun setWindSpeedUnit(unit: String) {
-        sharedPreferences.edit().putString("wind_speed_unit", unit).apply()
+        sharedPreferences.edit().putString(WIND_SPEED_UNIT_SHARED, unit).apply()
     }
 
     override fun saveLocation(latitude: Float, longitude: Float) {
         with(sharedPreferences.edit()) {
-            putFloat("latitude", latitude)
-            putFloat("longitude", longitude)
+            putFloat(LATITUDE_SHARED, latitude)
+            putFloat(LONGITUDE_SHARED, longitude)
             apply()
         }
     }
 
     override fun getLocation(): Pair<Float, Float>? {
-        val latitude = sharedPreferences.getFloat("latitude", Float.NaN)
-        val longitude = sharedPreferences.getFloat("longitude", Float.NaN)
+        val latitude = sharedPreferences.getFloat(LATITUDE_SHARED, Float.NaN)
+        val longitude = sharedPreferences.getFloat(LONGITUDE_SHARED, Float.NaN)
         return if (!latitude.isNaN() && !longitude.isNaN()) {
             Pair(latitude, longitude)
         } else {
@@ -39,11 +47,11 @@ class SharedPrefsDataSourceImpl(private val sharedPreferences: SharedPreferences
     }
 
     override fun getNotificationPreference(): Boolean {
-        return sharedPreferences.getBoolean("notifications_enabled", true)
+        return sharedPreferences.getBoolean(NOTIFICATION_SHARED, true)
     }
 
     override fun setNotificationPreference(enabled: Boolean) {
-        return sharedPreferences.edit().putBoolean("notifications_enabled", enabled).apply()
+        return sharedPreferences.edit().putBoolean(NOTIFICATION_SHARED, enabled).apply()
     }
 
     override fun getString(key: String, defaultValue: String): String {

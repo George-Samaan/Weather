@@ -36,6 +36,15 @@ import com.example.iti.ui.homeScreen.viewModel.HomeViewModelFactory
 import com.example.iti.ui.settings.view.SettingsActivity
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
 import com.example.iti.ui.settings.viewModel.SettingsViewModelFactory
+import com.example.iti.utils.Constants.ARABIC_SHARED
+import com.example.iti.utils.Constants.FAVOURITE_SHARED_CITY
+import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
+import com.example.iti.utils.Constants.METER_PER_SECOND
+import com.example.iti.utils.Constants.OFFLINE_SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.TEMPERATURE_FORMAT
 import com.example.iti.utils.Helpers.convertTemperature
 import com.example.iti.utils.Helpers.convertWindSpeed
 import com.example.iti.utils.Helpers.date
@@ -130,11 +139,11 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun gettingPassedKeysFromIntents() {
-        passedLat = intent.getDoubleExtra("latitude", 0.0)
-        Log.d("mahmoud", "passed lat : ${passedLat}")
-        passedLong = intent.getDoubleExtra("longitude", 0.0)
+        passedLat = intent.getDoubleExtra(LATITUDE_SHARED, 0.0)
+        Log.d("JJJJJ", "passed lat : ${passedLat}")
+        passedLong = intent.getDoubleExtra(LONGITUDE_SHARED, 0.0)
         isViewOnly = intent.getBooleanExtra("viewOnly", false)
-        cityName = intent.getStringExtra("CITY_KEY")
+        cityName = intent.getStringExtra(FAVOURITE_SHARED_CITY)
     }
 
     @Suppress("DEPRECATION")
@@ -152,7 +161,7 @@ class HomeScreenActivity : AppCompatActivity() {
             val language = settingsViewModel.getLanguage()
 
             // Determine the city name based on the language
-            city = if (language == "ar") { // Check if the language is Arabic
+            city = if (language == ARABIC_SHARED) { // Check if the language is Arabic
                 countryName // Only use the country name
             } else {
                 // Format the city string, including admin area and country name
@@ -184,21 +193,21 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun setUpCollector() {
-        Log.d("x", " xxxx")
         gettingWeatherDataFromViewModel()
         gettingHourlyWeatherDataFromViewModel()
         gettingDailyWeatherDataFromViewModel()
     }
 
     private fun saveWeatherDataToSharedPreferences(weather: Weather) {
-        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            getSharedPreferences(HOME_SCREEN_SHARED_PREFS_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
 
         // Convert Weather object to JSON string using Gson
         val gson = Gson()
         val weatherJson = gson.toJson(weather)
 
-        editor.putString("OfflineHomeScreenData", weatherJson)
+        editor.putString(OFFLINE_SHARED_PREFS_NAME, weatherJson)
         editor.apply() // Use apply() for asynchronous saving
     }
 
@@ -238,8 +247,9 @@ class HomeScreenActivity : AppCompatActivity() {
     }
 
     private fun fetchWeatherDataFromSharedPreferences() {
-        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
-        val weatherJson = sharedPreferences.getString("OfflineHomeScreenData", null)
+        val sharedPreferences =
+            getSharedPreferences(HOME_SCREEN_SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+        val weatherJson = sharedPreferences.getString(OFFLINE_SHARED_PREFS_NAME, null)
 
         if (weatherJson != null) {
             // Convert JSON string back to Weather object
@@ -265,11 +275,12 @@ class HomeScreenActivity : AppCompatActivity() {
 
         //update Temp
         val currentTemp = convertTemperature(weather.main.temp, unit)
-        binding.tvCurrentDegree.text = String.format("%.0f°%s", currentTemp, getUnitSymbol(unit))
+        binding.tvCurrentDegree.text =
+            String.format(TEMPERATURE_FORMAT, currentTemp, getUnitSymbol(unit))
         val minTemp = convertTemperature(weather.main.temp_min, unit)
-        binding.tvTempMin.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
+        binding.tvTempMin.text = String.format(TEMPERATURE_FORMAT, minTemp, getUnitSymbol(unit))
         val maxTemp = convertTemperature(weather.main.temp_max, unit)
-        binding.tvTempMax.text = String.format("%.0f°%s", maxTemp, getUnitSymbol(unit))
+        binding.tvTempMax.text = String.format(TEMPERATURE_FORMAT, maxTemp, getUnitSymbol(unit))
 
         //update weather details
         val cityName = city.trim()
@@ -289,7 +300,7 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvPressureValue.text =
             getString(com.example.iti.R.string.hpa, weather.main.pressure)
         binding.tvHumidityValue.text = "${weather.main.humidity} %"
-        val windSpeed = convertWindSpeed(weather.wind.speed, "Meter/Second", windSpeedUnit)
+        val windSpeed = convertWindSpeed(weather.wind.speed, METER_PER_SECOND, windSpeedUnit)
         binding.tvWindValue.text = String.format(
             Locale.getDefault(),
             "%.0f %s",
@@ -467,11 +478,12 @@ class HomeScreenActivity : AppCompatActivity() {
 
         // Convert and display temperatures
         val currentTemp = convertTemperature(weatherEntity.currentTemp, unit)
-        binding.tvCurrentDegree.text = String.format("%.0f°%s", currentTemp, getUnitSymbol(unit))
+        binding.tvCurrentDegree.text =
+            String.format(TEMPERATURE_FORMAT, currentTemp, getUnitSymbol(unit))
         val minTemp = convertTemperature(weatherEntity.minTemp, unit)
-        binding.tvTempMin.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
+        binding.tvTempMin.text = String.format(TEMPERATURE_FORMAT, minTemp, getUnitSymbol(unit))
         val maxTemp = convertTemperature(weatherEntity.maxTemp, unit)
-        binding.tvTempMax.text = String.format("%.0f°%s", maxTemp, getUnitSymbol(unit))
+        binding.tvTempMax.text = String.format(TEMPERATURE_FORMAT, maxTemp, getUnitSymbol(unit))
 
         // Set other weather details
         binding.tvCityName.text = weatherEntity.cityName
@@ -481,7 +493,7 @@ class HomeScreenActivity : AppCompatActivity() {
         binding.tvHumidityValue.text = "${weatherEntity.humidity} %"
 
         // Convert and display wind speed
-        val windSpeed = convertWindSpeed(weatherEntity.windSpeed, "Meter/Second", windSpeedUnit)
+        val windSpeed = convertWindSpeed(weatherEntity.windSpeed, METER_PER_SECOND, windSpeedUnit)
         binding.tvWindValue.text = String.format(
             Locale.getDefault(),
             "%.0f %s",
@@ -517,12 +529,6 @@ class HomeScreenActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        /*val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
-        val passedLat = sharedPreferences.getFloat("latitude", Float.MIN_VALUE).toDouble()
-        val passedLong = sharedPreferences.getFloat("longitude", Float.MIN_VALUE).toDouble()
-        Log.d("mahmoud","passed lat  Resume: $passedLat")
-        Log.d("mahmoud","passed long  Resume: $passedLong")
-        setCityNameBasedOnLatAndLong(passedLat,passedLong)*/
         fetchDataBasedOnLatAndLong()
         setUpAdapters()
         if (!isNetworkAvailable(this)) {
@@ -535,13 +541,13 @@ class HomeScreenActivity : AppCompatActivity() {
             apiService = ApiClient.retrofit,
             sharedPrefsDataSource = SharedPrefsDataSourceImpl(
                 this.getSharedPreferences(
-                    "AppSettingPrefs",
+                    SHARED_PREFS_NAME,
                     MODE_PRIVATE
                 )
             )
         ),
         sharedPrefsDataSource = SharedPrefsDataSourceImpl(
-            this.getSharedPreferences("AppSettingPrefs", MODE_PRIVATE)
+            this.getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE)
         ),
         localDataSource = LocalDataSourceImpl(AppDatabase.getDatabase(this).weatherDao())
     )

@@ -5,13 +5,14 @@ import com.example.iti.model.DailyForecast
 import com.example.iti.model.Hourly
 import com.example.iti.model.Weather
 import com.example.iti.model.WeatherEntity
+import com.example.iti.utils.Constants.CELSIUS_SHARED
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class FakeRepository : Repository {
     private val weatherData = mutableListOf<WeatherEntity>()
 
-    private var temperatureUnit: String = "Celsius"
+    private var temperatureUnit: String = CELSIUS_SHARED
     private var windSpeedUnit: String = "km/h"
     private var notificationPreference: Boolean = true
 

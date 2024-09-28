@@ -5,6 +5,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.iti.R
+import com.example.iti.utils.Constants.CELSIUS_SHARED
+import com.example.iti.utils.Constants.FAHRENHEIT_SHARED
+import com.example.iti.utils.Constants.KELVIN_SHARED
+import com.example.iti.utils.Constants.METER_PER_SECOND
+import com.example.iti.utils.Constants.MILES_PER_HOUR
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -12,34 +17,34 @@ import java.util.Locale
 object Helpers {
     fun convertTemperature(tempInCelsius: Double, unit: String): Double {
         return when (unit) {
-            "Celsius" -> tempInCelsius
-            "Fahrenheit" -> (tempInCelsius * 9 / 5) + 32
-            "Kelvin" -> tempInCelsius + 273.15
+            CELSIUS_SHARED -> tempInCelsius
+            FAHRENHEIT_SHARED -> (tempInCelsius * 9 / 5) + 32
+            KELVIN_SHARED -> tempInCelsius + 273.15
             else -> tempInCelsius
         }
     }
 
     fun getUnitSymbol(unit: String): String {
         return when (unit) {
-            "Celsius" -> "C"
-            "Fahrenheit" -> "F"
-            "Kelvin" -> "K"
+            CELSIUS_SHARED -> "C"
+            FAHRENHEIT_SHARED -> "F"
+            KELVIN_SHARED -> "K"
             else -> "C"
         }
     }
 
     fun getWindSpeedUnitSymbol(unit: String): Int {
         return when (unit) {
-            "Meter/Second" -> R.string.m_s
-            "Miles/Hour" -> R.string.mph
+            METER_PER_SECOND -> R.string.m_s
+            MILES_PER_HOUR -> R.string.mph
             else -> R.string.m_s
         }
     }
 
     fun convertWindSpeed(speed: Double, fromUnit: String, toUnit: String): Double {
         return when (toUnit) {
-            "Miles/Hour" -> if (fromUnit == "Meter/Second") speed * 2.23694 else speed
-            "Meter/Second" -> if (fromUnit == "Miles/Hour") speed / 2.23694 else speed
+            MILES_PER_HOUR -> if (fromUnit == METER_PER_SECOND) speed * 2.23694 else speed
+            METER_PER_SECOND -> if (fromUnit == MILES_PER_HOUR) speed / 2.23694 else speed
             else -> speed
         }
     }

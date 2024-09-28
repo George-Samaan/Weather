@@ -22,6 +22,9 @@ import com.example.iti.databinding.ActivitySplashBinding
 import com.example.iti.pushNotifications.Permission
 import com.example.iti.ui.googleMaps.view.GoogleMapsActivity
 import com.example.iti.ui.homeScreen.view.HomeScreenActivity
+import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -103,15 +106,16 @@ class SplashActivity : AppCompatActivity() {
 
     // Fetch location from SharedPreferences
     private fun fetchLocationFromSharedPreferences() {
-        val sharedPreferences = getSharedPreferences("homeScreen", Context.MODE_PRIVATE)
-        val savedLatitude = sharedPreferences.getFloat("latitude", Float.MIN_VALUE)
-        val savedLongitude = sharedPreferences.getFloat("longitude", Float.MIN_VALUE)
+        val sharedPreferences =
+            getSharedPreferences(HOME_SCREEN_SHARED_PREFS_NAME, Context.MODE_PRIVATE)
+        val savedLatitude = sharedPreferences.getFloat(LATITUDE_SHARED, Float.MIN_VALUE)
+        val savedLongitude = sharedPreferences.getFloat(LONGITUDE_SHARED, Float.MIN_VALUE)
 
         if (savedLatitude != Float.MIN_VALUE && savedLongitude != Float.MIN_VALUE) {
             // Latitude and Longitude are already stored, navigate to HomeScreenActivity
             val intent = Intent(this, HomeScreenActivity::class.java).apply {
-                putExtra("latitude", savedLatitude.toDouble())
-                putExtra("longitude", savedLongitude.toDouble())
+                putExtra(LATITUDE_SHARED, savedLatitude.toDouble())
+                putExtra(LONGITUDE_SHARED, savedLongitude.toDouble())
             }
             startActivity(intent)
             finish()
@@ -179,8 +183,8 @@ class SplashActivity : AppCompatActivity() {
 
     private fun navigateToHomeScreen() {
         val intent = Intent(this, HomeScreenActivity::class.java).apply {
-            putExtra("latitude", latitude)
-            putExtra("longitude", longitude)
+            putExtra(LATITUDE_SHARED, latitude)
+            putExtra(LONGITUDE_SHARED, longitude)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         startActivity(intent)

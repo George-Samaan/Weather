@@ -72,4 +72,8 @@
     <string name="scattered_clouds">scattered clouds</string>
     <string name="few_clouds">few clouds</string>
     <string name="weather">Weather</string>
+    <string name="good_morning">Good Morning.</string>
+    <string name="current_temperature_c">Current Temperature: %1$s°C</string>
+    <string name="good_afternoon">Good Afternoon.</string>
+    <string name="good_evening">Good Evening.</string>
 </resources>

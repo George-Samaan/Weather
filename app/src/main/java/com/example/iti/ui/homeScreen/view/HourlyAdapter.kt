@@ -10,6 +10,7 @@ import com.example.iti.R
 import com.example.iti.databinding.ItemHourlyBinding
 import com.example.iti.model.HourlyListElement
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
+import com.example.iti.utils.Constants.TEMPERATURE_FORMAT
 import com.example.iti.utils.Helpers.convertTemperature
 import com.example.iti.utils.Helpers.formatTime
 import com.example.iti.utils.Helpers.getHourFromUnixTime
@@ -42,7 +43,8 @@ class HourlyAdapter(
             lifecycleScope.launch(Dispatchers.Main) {
                 val unit = settingsViewModel.getTemperatureUnit()
                 val temp = convertTemperature(hourlyWeather.main.temp, unit)
-                binding.tvDegreeDayHour.text = String.format("%.0f°%s", temp, getUnitSymbol(unit))
+                binding.tvDegreeDayHour.text =
+                    String.format(TEMPERATURE_FORMAT, temp, getUnitSymbol(unit))
 
                 //time and weather icon
                 binding.timeHour.text = formatTime(hourlyWeather.dt)

@@ -12,6 +12,7 @@ import com.example.iti.R
 import com.example.iti.databinding.ItemDailyBinding
 import com.example.iti.model.DailyForecastElement
 import com.example.iti.ui.settings.viewModel.SettingsViewModel
+import com.example.iti.utils.Constants.TEMPERATURE_FORMAT
 import com.example.iti.utils.Helpers.convertTemperature
 import com.example.iti.utils.Helpers.getUnitSymbol
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +78,8 @@ class DailyAdapter(
                     .split(" ")
                     .joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
                 binding.tvHighDegree.text = String.format("%.0f", maxTemp, getUnitSymbol(unit))
-                binding.tvLowDegree.text = String.format("%.0f°%s", minTemp, getUnitSymbol(unit))
+                binding.tvLowDegree.text =
+                    String.format(TEMPERATURE_FORMAT, minTemp, getUnitSymbol(unit))
 
                 val iconCode = dailyWeather.weather[0].icon
                 binding.ivIconDays.setImageResource(getCustomIconForWeather(iconCode))

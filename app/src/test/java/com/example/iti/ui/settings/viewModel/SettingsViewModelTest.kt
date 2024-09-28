@@ -2,6 +2,8 @@ package com.example.iti.ui.settings.viewModel
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.iti.db.repository.Repository
+import com.example.iti.utils.Constants.CELSIUS_SHARED
+import com.example.iti.utils.Constants.FAHRENHEIT_SHARED
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,9 +22,9 @@ class SettingsViewModelTest {
 
     @Test
     fun test_get_and_set_temperature_unit() {
-        assert(viewModel.getTemperatureUnit() == "Celsius")
-        viewModel.setTemperatureUnit("Fahrenheit")
-        assert(viewModel.getTemperatureUnit() == "Fahrenheit")
+        assert(viewModel.getTemperatureUnit() == CELSIUS_SHARED)
+        viewModel.setTemperatureUnit(FAHRENHEIT_SHARED)
+        assert(viewModel.getTemperatureUnit() == FAHRENHEIT_SHARED)
     }
 
     @Test
