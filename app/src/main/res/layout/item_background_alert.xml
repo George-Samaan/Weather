@@ -1,58 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:elevation="10dp"
-    android:orientation="vertical"
-    android:padding="16dp"
-    app:cardCornerRadius="28dp"
-    app:cardElevation="15dp">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-            android:background="@drawable/gradient_background"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:layout_margin="16dp">
 
-        <ImageView
-            android:id="@+id/imv_weather_alert"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:layout_marginVertical="10dp"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/ic_few_cloud"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_check_weather"
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:layout_marginHorizontal="55dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/don_t_forget_to_check_the_weather"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imv_weather_alert"
-            app:layout_constraintTop_toTopOf="@id/imv_weather_alert" />
+            android:elevation="10dp"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="15dp">
 
-        <Button
-            android:id="@+id/dismiss_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/buttons_"
-            android:text="@string/dismiss"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imv_weather_alert"
-            app:layout_constraintEnd_toEndOf="@+id/tv_check_weather" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/alarm_bg"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+            <ImageView
+                    android:id="@+id/imv_weather_alert"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/ic_few_cloud"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                    android:id="@+id/tv_check_weather"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:layout_marginHorizontal="55dp"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/don_t_forget_to_check_the_weather"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/imv_weather_alert"
+                    app:layout_constraintTop_toTopOf="@id/imv_weather_alert" />
+
+            <Button
+                    android:id="@+id/dismiss_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/buttons_"
+                    android:text="@string/dismiss"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imv_weather_alert"
+                    app:layout_constraintEnd_toEndOf="@+id/tv_check_weather" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>
