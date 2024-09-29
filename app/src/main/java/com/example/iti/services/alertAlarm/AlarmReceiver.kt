@@ -6,6 +6,7 @@ import android.content.Intent
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.iti.utils.Constants.ALARM_ID_TO_DISMISS
 import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
 import com.example.iti.utils.Constants.LATITUDE_SHARED
 import com.example.iti.utils.Constants.LONGITUDE_SHARED
@@ -14,8 +15,11 @@ import com.example.iti.utils.SharedPrefsHelper
 class AlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
+            val alarmId = intent?.getIntExtra(ALARM_ID_TO_DISMISS, -1) // Get the alarm ID
+
             // Starting alarm sound service
             val alarmIntent = Intent(it, AlarmService::class.java)
+            alarmIntent.putExtra(ALARM_ID_TO_DISMISS, alarmId)
             it.startService(alarmIntent)
 
             // Fetch the weather and show a notification with the real-time data

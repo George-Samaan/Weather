@@ -24,5 +24,6 @@ object Constants {
     const val ENGLISH_SHARED = "en"
     const val ARABIC_SHARED = "ar"
     const val CURRENT_DEVICE_LAT_LANG = "current_lan_lat"
+    const val ALARM_ID_TO_DISMISS = "ALARM_ID"
 
 }

@@ -29,7 +29,7 @@ object NotificationServices {
             morningRequest
         )
 
-        val afternoonRequest = createWorkRequest("16:00", inputData)
+        val afternoonRequest = createWorkRequest("16:41", inputData)
         workManager.enqueueUniqueWork(
             "AfternoonWeatherNotification",
             ExistingWorkPolicy.REPLACE,

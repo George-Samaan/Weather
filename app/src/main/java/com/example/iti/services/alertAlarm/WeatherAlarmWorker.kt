@@ -35,11 +35,12 @@ class WeatherAlarmWorker(private val context: Context, workerParams: WorkerParam
 
                 // Collect the weather data from the repository
                 weatherRepository.fetchCurrentWeather(lat, lon).collect { weatherData ->
+                    val currentTemp = weatherData.main.temp.toInt()
                     // Show a notification with the fetched weather data
                     NotificationHelper.showNotification(
                         context,
                         "Weather Update -> ${weatherData.weather[0].description}",
-                        context.getString(R.string.current_temperature_c, weatherData.main.temp),
+                        context.getString(R.string.current_temperature_c, currentTemp),
                         R.drawable.app_logo
                     )
                 }
