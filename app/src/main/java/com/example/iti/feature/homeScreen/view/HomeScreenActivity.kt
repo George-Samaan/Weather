@@ -12,7 +12,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.iti.data.db.local.favourites.LocalDataSourceImpl
 import com.example.iti.data.db.remote.RemoteDataSourceImpl
 import com.example.iti.data.db.room.AppDatabase
@@ -218,33 +220,38 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun gettingWeatherDataFromViewModel() {
         lifecycleScope.launch {
-            weatherViewModel.weatherDataStateFlow.collect { apiState ->
-                when (apiState) {
-                    is ApiState.Loading -> {
-                        showLoading(true)
-                        binding.cardDaysDetails.visibility = View.GONE
-                        setVisibilityOfViewsOnScreen(true)
-                    }
-
-                    is ApiState.Success -> {
-                        delay(600)
-                        showLoading(false)
-                        slideInAndScaleView(binding.cardDaysDetails)
-//                        binding.cardDaysDetails.visibility = View.VISIBLE
-                        setVisibilityOfViewsOnScreen(false)
-                        val weatherData = apiState.data as Weather
-                        launch {
-                            updateUi(weatherData) // Update UI
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.weatherDataStateFlow.collect { apiState ->
+                    when (apiState) {
+                        is ApiState.Loading -> {
+                            showLoading(true)
+                            binding.cardDaysDetails.visibility = View.GONE
+                            setVisibilityOfViewsOnScreen(true)
                         }
-                        saveWeatherDataToSharedPreferences(weatherData) // Save to SharedPreferences
-                    }
 
-                    is ApiState.Failure -> {
-                        showLoading(false)
-                        setVisibilityOfViewsOnScreen(false)
-                        binding.rvHourlyDegrees.visibility = View.GONE
-                        binding.rvDetailedDays.visibility = View.GONE
-                        Log.e("WeatherError", "Error retrieving weather data ${apiState.message}")
+                        is ApiState.Success -> {
+                            delay(600)
+                            showLoading(false)
+                            slideInAndScaleView(binding.cardDaysDetails)
+//                        binding.cardDaysDetails.visibility = View.VISIBLE
+                            setVisibilityOfViewsOnScreen(false)
+                            val weatherData = apiState.data as Weather
+                            launch {
+                                updateUi(weatherData) // Update UI
+                            }
+                            saveWeatherDataToSharedPreferences(weatherData) // Save to SharedPreferences
+                        }
+
+                        is ApiState.Failure -> {
+                            showLoading(false)
+                            setVisibilityOfViewsOnScreen(false)
+                            binding.rvHourlyDegrees.visibility = View.GONE
+                            binding.rvDetailedDays.visibility = View.GONE
+                            Log.e(
+                                "WeatherError",
+                                "Error retrieving weather data ${apiState.message}"
+                            )
+                        }
                     }
                 }
             }
@@ -375,21 +382,23 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun gettingHourlyWeatherDataFromViewModel() {
         lifecycleScope.launch {
-            weatherViewModel.hourlyForecastDataStateFlow.collect { apiState ->
-                when (apiState) {
-                    is ApiState.Loading -> {
-                    }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.hourlyForecastDataStateFlow.collect { apiState ->
+                    when (apiState) {
+                        is ApiState.Loading -> {
+                        }
 
-                    is ApiState.Success -> {
-                        val hourlyList = (apiState.data as Hourly).list.take(9)
-                        hourlyAdapter.submitList(hourlyList)
-                    }
+                        is ApiState.Success -> {
+                            val hourlyList = (apiState.data as Hourly).list.take(9)
+                            hourlyAdapter.submitList(hourlyList)
+                        }
 
-                    is ApiState.Failure -> {
-                        Log.e(
-                            "WeatherError",
-                            "Error retrieving hourly forecast data ${apiState.message}"
-                        )
+                        is ApiState.Failure -> {
+                            Log.e(
+                                "WeatherError",
+                                "Error retrieving hourly forecast data ${apiState.message}"
+                            )
+                        }
                     }
                 }
             }
@@ -398,29 +407,31 @@ class HomeScreenActivity : AppCompatActivity() {
 
     private fun gettingDailyWeatherDataFromViewModel() {
         lifecycleScope.launch {
-            weatherViewModel.dailyForecastDataStateFlow.collect { apiState ->
-                when (apiState) {
-                    is ApiState.Loading -> {
-                        binding.rvDetailedDays.visibility = View.GONE
-                        binding.cardDaysDetails.visibility = View.GONE
-                    }
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.dailyForecastDataStateFlow.collect { apiState ->
+                    when (apiState) {
+                        is ApiState.Loading -> {
+                            binding.rvDetailedDays.visibility = View.GONE
+                            binding.cardDaysDetails.visibility = View.GONE
+                        }
 
-                    is ApiState.Success -> {
-                        delay(600)
-                        binding.rvDetailedDays.visibility = View.VISIBLE
-                        binding.cardDaysDetails.visibility = View.VISIBLE
-                        val dailyList =
-                            (apiState.data as List<*>).filterIsInstance<DailyForecastElement>()
-                        dailyAdapter.submitList(dailyList)
-                    }
+                        is ApiState.Success -> {
+                            delay(600)
+                            binding.rvDetailedDays.visibility = View.VISIBLE
+                            binding.cardDaysDetails.visibility = View.VISIBLE
+                            val dailyList =
+                                (apiState.data as List<*>).filterIsInstance<DailyForecastElement>()
+                            dailyAdapter.submitList(dailyList)
+                        }
 
-                    is ApiState.Failure -> {
-                        binding.rvDetailedDays.visibility = View.GONE
-                        binding.cardDaysDetails.visibility = View.GONE
-                        Log.e(
-                            "WeatherError",
-                            "Error retrieving daily forecast data ${apiState.message}"
-                        )
+                        is ApiState.Failure -> {
+                            binding.rvDetailedDays.visibility = View.GONE
+                            binding.cardDaysDetails.visibility = View.GONE
+                            Log.e(
+                                "WeatherError",
+                                "Error retrieving daily forecast data ${apiState.message}"
+                            )
+                        }
                     }
                 }
             }
