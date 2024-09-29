@@ -29,6 +29,11 @@ git clone https://github.com/George-Samaan/Weather.git
 
 ## Technical Details
 
+### Android SDK Version
+- **Minimum SDK Version:** 24
+- **Target SDK Version:** 34
+- **Compile SDK Version:** 34
+
 ### Architecture
 - **MVVM Pattern:** Ensures a clean separation of UI, business logic, and data handling, making the app maintainable and testable.
 
