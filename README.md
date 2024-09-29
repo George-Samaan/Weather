@@ -3,7 +3,10 @@
 ## Project Overview
 An Android Kotlin Mobile Application that provides real-time weather updates, forecasts, and alerts for your location or any other saved locations. You can receive weather notifications, manage multiple locations, and customize preferences like temperature units and language settings.
 
-[Clone the project](https://github.com/George-Samaan/Weather.git)
+## Clone the Repository
+
+To get started with the project, clone the repository using the following command:
+git clone https://github.com/George-Samaan/Weather.git
 
 ## Features
 
