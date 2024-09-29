@@ -1,66 +1,51 @@
 package com.example.iti.services.alertAlarm
 
-import android.annotation.SuppressLint
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationCompat
-import com.example.iti.R
-import com.example.iti.utils.Constants.ALARM_CHANNEL_ID
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.iti.utils.Constants.ALARM_ID_TO_DISMISS
+import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
+import com.example.iti.utils.Constants.LATITUDE_SHARED
+import com.example.iti.utils.Constants.LONGITUDE_SHARED
+import com.example.iti.utils.SharedPrefsHelper
 
 class AlarmReceiver : BroadcastReceiver() {
-    @SuppressLint("LaunchActivityFromNotification")
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
+            val alarmId = intent?.getIntExtra(ALARM_ID_TO_DISMISS, -1) // Get the alarm ID
+
+            // Starting alarm sound service
             val alarmIntent = Intent(it, AlarmService::class.java)
+            alarmIntent.putExtra(ALARM_ID_TO_DISMISS, alarmId)
             it.startService(alarmIntent)
 
-            createNotification(it)
+            // Fetch the weather and show a notification with the real-time data
+            fetchWeatherAndShowNotification(it)
         }
     }
 
-    private fun createNotification(context: Context) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                val channelId = ALARM_CHANNEL_ID
-                val channel = NotificationChannel(
-                    channelId,
-                    "Alarm Channel",
-                    NotificationManager.IMPORTANCE_LOW
-                ).apply {
-                    setSound(null, null)
-                }
-                val notificationManager =
-                    context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.createNotificationChannel(channel)
-            }
+    private fun fetchWeatherAndShowNotification(context: Context) {
+        val (lat, lon) = SharedPrefsHelper.getLatLonFromPrefs(
+            context,
+            HOME_SCREEN_SHARED_PREFS_NAME
+        )
 
-        val notificationIntent = Intent(context, DismissReceiver::class.java)
-         val pendingIntent = PendingIntent.getBroadcast(
-             context,
-             0,
-             notificationIntent,
-             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-         )
+        // Create input data for the worker
+        val inputData = Data.Builder()
+            .putDouble(LATITUDE_SHARED, lat)
+            .putDouble(LONGITUDE_SHARED, lon)
+            .build()
 
-        val notification = NotificationCompat.Builder(context, ALARM_CHANNEL_ID)
-             .setSmallIcon(R.drawable.app_logo)
-             .setContentText(context.getString(R.string.don_t_forget_to_check_the_weather))
-             .setPriority(NotificationCompat.PRIORITY_HIGH)
-             .setOngoing(true)
-            .addAction(
-                R.drawable.ic_notification,
-                context.getString(R.string.dismiss),
-                pendingIntent
-            )
-             .setSound(null)
-             .build()
+        // Create a one-time work request to fetch the weather data
+        val weatherRequest = OneTimeWorkRequestBuilder<WeatherAlarmWorker>()
+            .setInputData(inputData)
+            .build()
+        // Enqueue the request
+        WorkManager.getInstance(context).enqueue(weatherRequest)
 
-         val notificationManager =
-             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-         notificationManager.notify(1, notification)
+
     }
-
 }

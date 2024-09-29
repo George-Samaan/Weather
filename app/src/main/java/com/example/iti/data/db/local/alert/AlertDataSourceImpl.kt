@@ -9,6 +9,7 @@ import com.example.iti.data.db.room.AlarmDao
 import com.example.iti.data.model.AlarmEntity
 import com.example.iti.services.alertAlarm.AlarmReceiver
 import com.example.iti.services.alertAlarm.AlarmService
+import com.example.iti.utils.Constants.ALARM_ID_TO_DISMISS
 import kotlinx.coroutines.flow.Flow
 
 class AlertDataSourceImpl(
@@ -18,7 +19,9 @@ class AlertDataSourceImpl(
 ) : AlertDataSource {
     @SuppressLint("ScheduleExactAlarm")
     override suspend fun setAlarm(timeInMillis: Long, alarmId: Int) {
-        val intent = Intent(context, AlarmReceiver::class.java)
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra(ALARM_ID_TO_DISMISS, alarmId)
+        }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             alarmId,  // Use alarmId here

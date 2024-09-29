@@ -60,6 +60,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.util.Locale
 
 class HomeScreenActivity : AppCompatActivity() {
@@ -149,30 +150,34 @@ class HomeScreenActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
     private fun setCityNameBasedOnLatAndLong(lat: Double, long: Double) {
         val geocoder = Geocoder(this, Locale.getDefault())
-        val addresses = geocoder.getFromLocation(lat, long, 1)
-        if (!addresses.isNullOrEmpty()) {
-            val address = addresses[0]
+        try {
+            val addresses = geocoder.getFromLocation(lat, long, 1)
+            if (!addresses.isNullOrEmpty()) {
+                val address = addresses[0]
+                // Safely handle potential null values for the admin area and country name
+                val adminArea = address.adminArea?.takeIf { it.isNotBlank() } ?: ""
+                val countryName = address.countryName?.takeIf { it.isNotBlank() } ?: ""
 
-            // Safely handle potential null values for the admin area and country name
-            val adminArea = address.adminArea?.takeIf { it.isNotBlank() } ?: ""
-            val countryName = address.countryName?.takeIf { it.isNotBlank() } ?: ""
+                // Get the language setting from SharedPreferences
+                val language = settingsViewModel.getLanguage()
 
-            // Get the language setting from SharedPreferences
-            val language = settingsViewModel.getLanguage()
+                // Determine the city name based on the language
+                city = if (language == ARABIC_SHARED) { // Check if the language is Arabic
+                    countryName // Only use the country name
+                } else {
+                    // Format the city string, including admin area and country name
+                    listOf(adminArea, countryName)
+                        .filter { it.isNotEmpty() }
+                        .joinToString(", ")
+                }
 
-            // Determine the city name based on the language
-            city = if (language == ARABIC_SHARED) { // Check if the language is Arabic
-                countryName // Only use the country name
-            } else {
-                // Format the city string, including admin area and country name
-                listOf(adminArea, countryName)
-                    .filter { it.isNotEmpty() }
-                    .joinToString(", ")
+                if (city.isNotEmpty()) {
+                    Log.e("HomeScreenActivity", "City: $city")
+                }
             }
-
-            if (city.isNotEmpty()) {
-                Log.e("HomeScreenActivity", "City: $city")
-            }
+        } catch (e: IOException) {
+            Log.e("HomeScreenActivity", "Geocoder service is unavailable: ${e.message}")
+            // Handle the error (e.g., notify the user, use default values, etc.)
         }
     }
 
@@ -263,7 +268,7 @@ class HomeScreenActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale")
+    @SuppressLint("SetTextI18n", "DefaultLocale", "StringFormatMatches")
     private fun updateUi(weather: Weather) {
         val unit = settingsViewModel.getTemperatureUnit()
         val windSpeedUnit = settingsViewModel.getWindSpeedUnit()

@@ -36,6 +36,13 @@ class RepositoryTest {
     }
 
     @Test
+    fun test_retrieve_nothing_weather_data() = runTest {
+        val weatherData = repository.getAllWeatherData().first()
+        assertEquals(emptyList<WeatherEntity>(), weatherData)
+    }
+
+
+    @Test
     fun test_delete_weather_data() = runTest {
         val mockWeatherEntity = mockWeatherEntity
         repository.insertWeather(mockWeatherEntity)
@@ -71,7 +78,22 @@ class RepositoryTest {
         val weatherCity = repository.getWeatherCity("Cairo")
         assertEquals(mockWeatherEntity, weatherCity)
     }
+
+
+    //-------------------------------------------------------------------------
+    // test remote fetch current weather
+    @Test
+    fun test_fetch_current_weather() = runTest {
+        val weather = repository.fetchCurrentWeather(37.39, -122.08).first()
+        assertEquals("San Francisco", weather.name)
+        assertEquals("Clear", weather.weather[0].main)
+    }
 }
+
+
+
+
+
 
 
 val mockWeatherEntity = WeatherEntity(

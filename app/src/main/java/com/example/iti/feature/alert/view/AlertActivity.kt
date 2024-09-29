@@ -136,19 +136,44 @@ class AlertActivity : AppCompatActivity() {
     }
 
     private fun showTimePicker(calendar: Calendar) {
+        // Get the current time
+        val now = Calendar.getInstance()
+
+        // Check if the selected date is today
+        val isToday = now.get(Calendar.YEAR) == calendar.get(Calendar.YEAR) &&
+                now.get(Calendar.DAY_OF_YEAR) == calendar.get(Calendar.DAY_OF_YEAR)
+
+        // Set the initial hour and minute based on whether it’s today
+        val hour = if (isToday) now.get(Calendar.HOUR_OF_DAY) else 0
+        val minute = if (isToday) now.get(Calendar.MINUTE) else 0
+
         val timePickerDialog = TimePickerDialog(
             this, R.style.CustomTimePickerDialog,
             { _, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-                selectedTimeInMillis = calendar.timeInMillis
-                checkOverlayPermission()
+                // Check if the selected time is in the past
+                if (isToday && (hourOfDay < now.get(Calendar.HOUR_OF_DAY) ||
+                            (hourOfDay == now.get(Calendar.HOUR_OF_DAY) && minute < now.get(Calendar.MINUTE)))
+                ) {
+                    // Show toast message if selected time is in the past
+                    Toast.makeText(
+                        this,
+                        "This time has already passed. Please select a future time.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // If valid time, set the calendar and proceed
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                    calendar.set(Calendar.MINUTE, minute)
+                    calendar.set(Calendar.SECOND, 0)
+                    selectedTimeInMillis = calendar.timeInMillis
+                    checkOverlayPermission() // Proceed to set the alarm
+                }
             },
-            calendar.get(Calendar.HOUR_OF_DAY),
-            calendar.get(Calendar.MINUTE),
+            hour,
+            minute,
             false
         )
+
         timePickerDialog.show()
     }
 

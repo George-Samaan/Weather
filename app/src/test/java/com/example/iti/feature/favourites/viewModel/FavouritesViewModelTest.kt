@@ -27,6 +27,7 @@ class FavouritesViewModelTest {
 
 
     // integration test between FavouritesViewModel and Repository
+    // DOUBLE
     @Test
     fun `test insert weather data`() = runTest {
         val mockWeatherEntity = WeatherEntity(

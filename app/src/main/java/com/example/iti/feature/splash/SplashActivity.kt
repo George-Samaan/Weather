@@ -22,6 +22,7 @@ import com.example.iti.databinding.ActivitySplashBinding
 import com.example.iti.feature.googleMaps.view.GoogleMapsActivity
 import com.example.iti.feature.homeScreen.view.HomeScreenActivity
 import com.example.iti.services.pushNotifications.Permission
+import com.example.iti.utils.Constants.CURRENT_DEVICE_LAT_LANG
 import com.example.iti.utils.Constants.HOME_SCREEN_SHARED_PREFS_NAME
 import com.example.iti.utils.Constants.LATITUDE_SHARED
 import com.example.iti.utils.Constants.LONGITUDE_SHARED
@@ -168,6 +169,10 @@ class SplashActivity : AppCompatActivity() {
                     latitude = location.latitude
                     longitude = location.longitude
                     Log.d("Location", "Longitude: $longitude, Latitude: $latitude")
+
+                    // Save the latitude and longitude in SharedPreferences
+                    saveLocationToSharedPreferences(latitude!!, longitude!!)
+
                     navigateToHomeScreen()
                 }
                 fusedLocationClient.removeLocationUpdates(this)
@@ -179,6 +184,17 @@ class SplashActivity : AppCompatActivity() {
             locationCallback,
             Looper.getMainLooper()
         )
+    }
+
+    // Save the location to SharedPreferences
+    private fun saveLocationToSharedPreferences(lat: Double, lon: Double) {
+        val sharedPreferences = getSharedPreferences(CURRENT_DEVICE_LAT_LANG, Context.MODE_PRIVATE)
+        with(sharedPreferences.edit()) {
+            putFloat(LATITUDE_SHARED, lat.toFloat())
+            putFloat(LONGITUDE_SHARED, lon.toFloat())
+            apply() // Save changes asynchronously
+        }
+        Log.d("SharedPrefs", "Location saved: Lat=$lat, Lon=$lon")
     }
 
     private fun navigateToHomeScreen() {

@@ -25,6 +25,7 @@ import java.util.Locale
 class WeatherNotifyWorker(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
+    @SuppressLint("StringFormatMatches")
     override suspend fun doWork(): Result {
         val lat = inputData.getDouble(LATITUDE_SHARED, 0.0)
         val lon = inputData.getDouble(LONGITUDE_SHARED, 0.0)
@@ -42,21 +43,22 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
                 // Collecting the Flow from the repository
                 weatherRepository.fetchCurrentWeather(lat, lon).collect { weatherData ->
                     val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
+                    val currentTemperature = weatherData.main.temp.toInt()
                     when (currentTime) {
                         "08:00" -> showNotification(
                             context.getString(R.string.good_morning),
                             context.getString(
                                 R.string.current_temperature_c,
-                                weatherData.main.temp
+                                currentTemperature
                             ),
                             R.drawable.ic_clear_sky
                         )
 
-                        "16:00" -> showNotification(
+                        "16:41" -> showNotification(
                             context.getString(R.string.good_afternoon),
                             context.getString(
                                 R.string.current_temperature_c,
-                                weatherData.main.temp
+                                currentTemperature
                             ),
                             R.drawable.ic_few_cloud
                         )
@@ -65,7 +67,7 @@ class WeatherNotifyWorker(private val context: Context, workerParams: WorkerPara
                             context.getString(R.string.good_evening),
                             context.getString(
                                 R.string.current_temperature_c,
-                                weatherData.main.temp
+                                currentTemperature
                             ),
                             R.drawable.ic_night_hour
                         )
