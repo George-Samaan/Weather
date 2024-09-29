@@ -25,6 +25,7 @@ import java.util.Locale
 class WeatherNotifyWorker(private val context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 
+    @SuppressLint("StringFormatMatches")
     override suspend fun doWork(): Result {
         val lat = inputData.getDouble(LATITUDE_SHARED, 0.0)
         val lon = inputData.getDouble(LONGITUDE_SHARED, 0.0)

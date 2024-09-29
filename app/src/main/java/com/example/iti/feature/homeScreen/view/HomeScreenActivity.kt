@@ -263,7 +263,7 @@ class HomeScreenActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n", "DefaultLocale")
+    @SuppressLint("SetTextI18n", "DefaultLocale", "StringFormatMatches")
     private fun updateUi(weather: Weather) {
         val unit = settingsViewModel.getTemperatureUnit()
         val windSpeedUnit = settingsViewModel.getWindSpeedUnit()

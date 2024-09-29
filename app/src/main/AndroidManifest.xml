@@ -50,7 +50,6 @@
             android:enabled="true"
             android:exported="false" />
 
-        <receiver android:name=".services.alertAlarm.DismissReceiver" />
 
         <receiver android:name=".services.alertAlarm.AlarmReceiver" />
 
