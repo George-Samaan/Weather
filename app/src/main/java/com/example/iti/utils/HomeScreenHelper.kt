@@ -3,7 +3,7 @@ package com.example.iti.utils
 import android.content.Context
 import android.view.View
 import com.example.iti.R
-import com.example.iti.model.Weather
+import com.example.iti.data.model.Weather
 
 object HomeScreenHelper {
     fun checkWeatherDescription(context: Context, weather: Weather): Int {

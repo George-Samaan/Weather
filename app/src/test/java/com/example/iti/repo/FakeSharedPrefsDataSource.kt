@@ -1,6 +1,6 @@
 package com.example.iti.repo
 
-import com.example.iti.db.sharedPrefrences.SharedPrefsDataSource
+import com.example.iti.data.db.sharedPrefrences.SharedPrefsDataSource
 
 class FakeSharedPrefsDataSource : SharedPrefsDataSource {
     override fun getTemperatureUnit(): String {

@@ -24,20 +24,20 @@
         android:theme="@style/Theme.Weather"
         tools:targetApi="31">
         <activity
-            android:name=".ui.alert.view.AlertActivity"
+                android:name=".feature.alert.view.AlertActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApp.Bg" />
         <activity
-            android:name=".ui.favourites.view.FavouritesActivity"
+                android:name=".feature.favourites.view.FavouritesActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApp.Bg" />
         <activity
-            android:name=".ui.homeScreen.view.HomeScreenActivity"
+                android:name=".feature.homeScreen.view.HomeScreenActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:theme="@style/Theme.MyApp.Bg" />
         <activity
-            android:name=".ui.settings.view.SettingsActivity"
+                android:name=".feature.settings.view.SettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApp.Bg" />
 
@@ -46,21 +46,21 @@
             android:value="${MAPS_API_KEY}" />
 
         <service
-            android:name=".alert.AlarmService"
+                android:name=".services.alertAlarm.AlarmService"
             android:enabled="true"
             android:exported="false" />
 
-        <receiver android:name=".alert.DismissReceiver" />
+        <receiver android:name=".services.alertAlarm.DismissReceiver" />
 
-        <receiver android:name=".alert.AlarmReceiver" />
+        <receiver android:name=".services.alertAlarm.AlarmReceiver" />
 
 
         <activity
-            android:name=".ui.googleMaps.view.GoogleMapsActivity"
+                android:name=".feature.googleMaps.view.GoogleMapsActivity"
             android:exported="false"
             android:theme="@style/Theme.MyApp.Bg" />
         <activity
-            android:name=".ui.splash.SplashActivity"
+                android:name=".feature.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApp.Bg">
             <intent-filter>

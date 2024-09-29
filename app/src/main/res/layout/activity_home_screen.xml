@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/gradient_background"
-            tools:context=".ui.homeScreen.view.HomeScreenActivity">
+                tools:context=".feature.homeScreen.view.HomeScreenActivity">
 
 
             <ImageView

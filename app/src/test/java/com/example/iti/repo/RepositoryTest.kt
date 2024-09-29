@@ -1,11 +1,11 @@
 package com.example.iti.repo
 
-import com.example.iti.db.local.favourites.LocalDataSource
-import com.example.iti.db.remote.RemoteDataSource
-import com.example.iti.db.repository.Repository
-import com.example.iti.db.repository.RepositoryImpl
-import com.example.iti.db.sharedPrefrences.SharedPrefsDataSource
-import com.example.iti.model.WeatherEntity
+import com.example.iti.data.db.local.favourites.LocalDataSource
+import com.example.iti.data.db.remote.RemoteDataSource
+import com.example.iti.data.db.sharedPrefrences.SharedPrefsDataSource
+import com.example.iti.data.model.WeatherEntity
+import com.example.iti.data.repository.Repository
+import com.example.iti.data.repository.RepositoryImpl
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

@@ -1,7 +1,7 @@
 package com.example.iti.repo
 
-import com.example.iti.db.local.favourites.LocalDataSource
-import com.example.iti.model.WeatherEntity
+import com.example.iti.data.db.local.favourites.LocalDataSource
+import com.example.iti.data.model.WeatherEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

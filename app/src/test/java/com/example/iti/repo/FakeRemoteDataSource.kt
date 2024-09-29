@@ -1,9 +1,9 @@
 package com.example.iti.repo
 
-import com.example.iti.db.remote.RemoteDataSource
-import com.example.iti.model.DailyForecast
-import com.example.iti.model.Hourly
-import com.example.iti.model.Weather
+import com.example.iti.data.db.remote.RemoteDataSource
+import com.example.iti.data.model.DailyForecast
+import com.example.iti.data.model.Hourly
+import com.example.iti.data.model.Weather
 import kotlinx.coroutines.flow.Flow
 
 class FakeRemoteDataSource : RemoteDataSource {
