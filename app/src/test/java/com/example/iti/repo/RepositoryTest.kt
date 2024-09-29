@@ -29,10 +29,10 @@ class RepositoryTest {
 
     @Test
     fun `test insert weather data`() = runTest {
-        val mockWeatherEntity = mockWeatherEntity
-        repository.insertWeather(mockWeatherEntity)
+        val fakeWeatherEntity = fakeWeatherEntity
+        repository.insertWeather(fakeWeatherEntity)
         val weatherData = repository.getAllWeatherData().first()
-        assertEquals(listOf(mockWeatherEntity), weatherData)
+        assertEquals(listOf(fakeWeatherEntity), weatherData)
     }
 
     @Test
@@ -44,23 +44,23 @@ class RepositoryTest {
 
     @Test
     fun test_delete_weather_data() = runTest {
-        val mockWeatherEntity = mockWeatherEntity
-        repository.insertWeather(mockWeatherEntity)
-        repository.deleteWeather(mockWeatherEntity)
+        val fakeWeatherEntity = fakeWeatherEntity
+        repository.insertWeather(fakeWeatherEntity)
+        repository.deleteWeather(fakeWeatherEntity)
         val weatherData = repository.getAllWeatherData().first()
         assertEquals(emptyList<WeatherEntity>(), weatherData)
     }
 
     @Test
     fun test_inserting_more_than_one_weather_data() = runTest {
-        val mockWeatherEntity = mockWeatherEntity
-        val mockWeatherEntity2 = mockWeatherEntity2
-        repository.insertWeather(mockWeatherEntity)
-        repository.insertWeather(mockWeatherEntity2)
-        repository.insertWeather(mockWeatherEntity2)
-        repository.deleteWeather(mockWeatherEntity)
+        val fakeWeatherEntity = fakeWeatherEntity
+        val fakeWeatherEntity2 = fakeWeatherEntity2
+        repository.insertWeather(fakeWeatherEntity)
+        repository.insertWeather(fakeWeatherEntity2)
+        repository.insertWeather(fakeWeatherEntity2)
+        repository.deleteWeather(fakeWeatherEntity)
         val weatherData = repository.getAllWeatherData().first()
-        assertEquals(listOf(mockWeatherEntity2, mockWeatherEntity2), weatherData)
+        assertEquals(listOf(fakeWeatherEntity2, fakeWeatherEntity2), weatherData)
     }
 
 
@@ -73,10 +73,10 @@ class RepositoryTest {
 
     @Test
     fun test_get_weather_city() = runTest {
-        val mockWeatherEntity = mockWeatherEntity
-        repository.insertWeather(mockWeatherEntity)
+        val fakeWeatherEntity = fakeWeatherEntity
+        repository.insertWeather(fakeWeatherEntity)
         val weatherCity = repository.getWeatherCity("Cairo")
-        assertEquals(mockWeatherEntity, weatherCity)
+        assertEquals(fakeWeatherEntity, weatherCity)
     }
 
 
@@ -87,47 +87,42 @@ class RepositoryTest {
         val weather = repository.fetchCurrentWeather(37.39, -122.08).first()
         assertEquals("San Francisco", weather.name)
         assertEquals("Clear", weather.weather[0].main)
+        assertEquals(283, weather.main.temp.toInt())
     }
+
+    val fakeWeatherEntity = WeatherEntity(
+        cityName = "Cairo",
+        description = "Clear Sky",
+        currentTemp = 30.0,
+        minTemp = 25.0,
+        maxTemp = 35.0,
+        pressure = 1012,
+        humidity = 50,
+        windSpeed = 5.0,
+        clouds = 10,
+        sunrise = 1600000000,
+        sunset = 1600040000,
+        date = "2024-09-28",
+        latitude = 30.0444,
+        longitude = 31.2357,
+        lottie = 1
+    )
+
+    val fakeWeatherEntity2 = WeatherEntity(
+        cityName = "Alexandria",
+        description = "Clear Sky",
+        currentTemp = 30.0,
+        minTemp = 25.0,
+        maxTemp = 35.0,
+        pressure = 1012,
+        humidity = 50,
+        windSpeed = 5.0,
+        clouds = 10,
+        sunrise = 1600000000,
+        sunset = 1600040000,
+        date = "2024-09-28",
+        latitude = 30.0444,
+        longitude = 31.2357,
+        lottie = 1
+    )
 }
-
-
-
-
-
-
-
-val mockWeatherEntity = WeatherEntity(
-    cityName = "Cairo",
-    description = "Clear Sky",
-    currentTemp = 30.0,
-    minTemp = 25.0,
-    maxTemp = 35.0,
-    pressure = 1012,
-    humidity = 50,
-    windSpeed = 5.0,
-    clouds = 10,
-    sunrise = 1600000000,
-    sunset = 1600040000,
-    date = "2024-09-28",
-    latitude = 30.0444,
-    longitude = 31.2357,
-    lottie = 1
-)
-
-val mockWeatherEntity2 = WeatherEntity(
-    cityName = "Alexandria",
-    description = "Clear Sky",
-    currentTemp = 30.0,
-    minTemp = 25.0,
-    maxTemp = 35.0,
-    pressure = 1012,
-    humidity = 50,
-    windSpeed = 5.0,
-    clouds = 10,
-    sunrise = 1600000000,
-    sunset = 1600040000,
-    date = "2024-09-28",
-    latitude = 30.0444,
-    longitude = 31.2357,
-    lottie = 1
-)

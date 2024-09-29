@@ -30,7 +30,7 @@ class FavouritesViewModelTest {
     // DOUBLE
     @Test
     fun `test insert weather data`() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakeWeatherEntity = WeatherEntity(
             cityName = "Cairo",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -49,18 +49,18 @@ class FavouritesViewModelTest {
         )
 
         // Call the method to insert weather data
-        viewModel.insertWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakeWeatherEntity)
 
         // Collect all weather data from the repository using Flow
         val weatherData = repository.getAllWeatherData().first()
 
         // Assert that the inserted data matches the mock data
-        assertEquals(listOf(mockWeatherEntity), weatherData)
+        assertEquals(listOf(fakeWeatherEntity), weatherData)
     }
 
     @Test
     fun test_delete_weather_data() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakeWeatherEntity = WeatherEntity(
             cityName = "Cairo",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -77,7 +77,7 @@ class FavouritesViewModelTest {
             longitude = 31.2357,
             lottie = 1
         )
-        viewModel.insertWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakeWeatherEntity)
 //        viewModel.deleteWeatherData(mockWeatherEntity)
 //        val weatherData = repository.getAllWeatherData().first()
         val weatherDataa = viewModel.allWeatherData.first()
@@ -88,7 +88,7 @@ class FavouritesViewModelTest {
 
     @Test
     fun test_get_weather_city() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakeWeatherEntity = WeatherEntity(
             cityName = "Alexandria",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -105,9 +105,9 @@ class FavouritesViewModelTest {
             longitude = 31.2357,
             lottie = 1
         )
-        viewModel.insertWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakeWeatherEntity)
         val weatherCity = viewModel.getWeatherCity("Alexandria")
-        assertEquals(mockWeatherEntity, weatherCity)
+        assertEquals(fakeWeatherEntity, weatherCity)
     }
 
     @Test
@@ -153,7 +153,7 @@ class FavouritesViewModelTest {
     //testing viewModel only
     @Test
     fun `test insert weather data ViewModel Only`() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakeWeatherEntity = WeatherEntity(
             cityName = "Cairo",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -172,18 +172,18 @@ class FavouritesViewModelTest {
         )
 
         // Call the method to insert weather data
-        viewModel.insertWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakeWeatherEntity)
 
         // Collect all weather data from the ViewModel's internal state
         val weatherData = viewModel.allWeatherData.first()
 
         // Assert that the inserted data matches the mock data
-        assertEquals(listOf(mockWeatherEntity), weatherData)
+        assertEquals(listOf(fakeWeatherEntity), weatherData)
     }
 
     @Test
     fun test_delete_weather_data_ViewModel_Only() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakeWeatherEntity = WeatherEntity(
             cityName = "Cairo",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -201,8 +201,8 @@ class FavouritesViewModelTest {
             lottie = 1
         )
 
-        viewModel.insertWeatherData(mockWeatherEntity)
-        viewModel.deleteWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakeWeatherEntity)
+        viewModel.deleteWeatherData(fakeWeatherEntity)
 
         // Collect the updated weather data from the ViewModel's internal state
         val weatherData = viewModel.allWeatherData.first()
@@ -213,7 +213,7 @@ class FavouritesViewModelTest {
 
     @Test
     fun test_get_weather_city_ViewModel_Only() = runTest {
-        val mockWeatherEntity = WeatherEntity(
+        val fakekWeatherEntity = WeatherEntity(
             cityName = "Alexandria",
             description = "Clear Sky",
             currentTemp = 30.0,
@@ -230,21 +230,18 @@ class FavouritesViewModelTest {
             longitude = 31.2357,
             lottie = 1
         )
-        viewModel.insertWeatherData(mockWeatherEntity)
+        viewModel.insertWeatherData(fakekWeatherEntity)
 
         // Call the method to get weather by city name
         val weatherCity = viewModel.getWeatherCity("Alexandria")
 
         // Assert that the returned city matches the mock data
-        assertEquals(mockWeatherEntity, weatherCity)
+        assertEquals(fakekWeatherEntity, weatherCity)
     }
 
     @Test
     fun test_get_weather_city_not_found_ViewModel_Only() = runTest {
-        // Call the method to get a city that does not exist
         val weatherCity = viewModel.getWeatherCity("Cairo")
-
-        // Assert that no weather data is found
         assertEquals(null, weatherCity)
     }
 
@@ -272,7 +269,6 @@ class FavouritesViewModelTest {
             mockWeatherFakeEntities.add(mockWeatherEntity)
             viewModel.insertWeatherData(mockWeatherEntity)
         }
-        // Retrieve all weather data from the ViewModel's internal state
         val retrievedWeatherData = viewModel.allWeatherData.first()
 
         // Assert that the retrieved weather data matches the mock data
